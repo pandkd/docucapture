@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuCapture Analyst - Smart Documentation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header .ai-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #2c5282;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a365d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .status {
+            padding: 15px 30px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .status.recording {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 0;
+        }
+
+        .content {
+            padding: 30px;
+            border-right: 2px solid #e9ecef;
+        }
+
+        .ai-panel {
+            background: #f8f9fa;
+            padding: 30px;
+            overflow-y: auto;
+            max-height: calc(100vh - 300px);
+        }
+
+        .ai-panel h3 {
+            color: #2c5282;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-section {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .ai-section h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .ai-loading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6c757d;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e9ecef;
+            border-top-color: #2c5282;
+            border-radius: 4px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .suggestion-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .suggestion-item strong {
+            color: #2c5282;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .suggestion-item p {
+            margin: 0;
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .efficiency-score {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .efficiency-score .score {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .efficiency-score .label {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .guide-title-section {
+            margin-bottom: 30px;
+        }
+
+        .guide-title-section input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: 600;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            border-color: #2c5282;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .step.redundant {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .step.optimizable {
+            border-color: #17a2b8;
+            background: #d1ecf1;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: #2c5282;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .step-screenshot {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+        }
+
+        .step-description {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .step-description:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .step-ai-note {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e7f3ff;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .recording-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+
+        .recording-indicator.active {
+            display: flex;
+        }
+
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 4px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .insight-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .insight-badge.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .insight-badge.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .insight-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                border-right: none;
+                border-bottom: 2px solid #e9ecef;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .header, .controls, .export-section, .ai-panel {
+                display: none;
+            }
+            
+            .main-content {
+                display: block;
+            }
+            
+            .step {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="recording-indicator" id="recordingIndicator">
+        <div class="recording-dot"></div>
+        <span>Recording in progress...</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>DocuCapture Analyst</h1>
+            <p>Create smart documentation with Intelligent process optimization</p>
+            <div class="ai-badge">Process Analysis</div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <button class="btn btn-primary" id="startBtn" onclick="startCapture()">
+                    Start Recording
+                </button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopCapture()" disabled>
+                    Stop Recording
+                </button>
+                <button class="btn btn-success" id="captureBtn" onclick="captureScreenshot()" disabled>
+                    Capture Step
+                </button>
+                <button class="btn btn-secondary" id="addStepBtn" onclick="addManualStep()">
+                    Add Manual Step
+                </button>
+                <button class="btn btn-success" id="importBtn" onclick="importFromFile()">
+                    Import Process
+                </button>
+                <button class="btn btn-warning" id="analyzeBtn" onclick="analyzeWithAI()" disabled>
+                    Analyze Process
+                </button>
+            </div>
+        </div>
+
+        <div class="status" id="statusBar">
+            Ready to start. Click "Start Recording" to begin capturing your process.
+        </div>
+
+        <div class="main-content">
+            <div class="content">
+                <div class="guide-title-section">
+                    <input type="text" id="guideTitle" class="input-field" placeholder="Enter guide title (e.g., 'How to Create a New Project')" value="Untitled Guide">
+                </div>
+
+                <div id="stepsContainer" class="steps-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>No steps yet</h3>
+                        <p>Start recording or add manual steps to create your documentation</p>
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <h3 style="margin-bottom: 15px;">Export Your Guide</h3>
+                    <div class="export-options">
+                        <button class="btn btn-primary" onclick="exportAsHTML()">
+                            Export as HTML
+                        </button>
+                        <button class="btn btn-primary" onclick="exportAsMarkdown()">
+                            Export as Markdown
+                        </button>
+                        <button class="btn btn-primary" onclick="printGuide()">
+                            Print / Save as PDF
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearAll()">
+                            Clear All Steps
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-panel">
+                <h3>Analysis Insights</h3>
+                <div id="aiContent">
+                    <div class="empty-state" style="padding: 40px 20px;">
+                        <div class="empty-state-icon" style="font-size: 48px;">🧠</div>
+                        <p style="font-size: 14px;">Add steps to your guide, then click "Analyze Process" to get intelligent suggestions for optimizing your process flow.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mediaStream = null;
+        let steps = [];
+        let stepCounter = 0;
+        let aiAnalysis = null;
+
+        function updateStatus(message, isRecording = false) {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.classList.add('active');
+            if (isRecording) {
+                statusBar.classList.add('recording');
+            } else {
+                statusBar.classList.remove('recording');
+            }
+        }
+
+        async function startCapture() {
+            try {
+                mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { mediaSource: 'screen' }
+                });
+
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('captureBtn').disabled = false;
+                document.getElementById('recordingIndicator').classList.add('active');
+                
+                updateStatus('Recording started! Click "Capture Step" whenever you complete an action.', true);
+
+                mediaStream.getVideoTracks()[0].addEventListener('ended', () => {
+                    stopCapture();
+                });
+
+            } catch (err) {
+                alert('Screen capture was cancelled or not supported. Please try again.');
+                console.error('Error starting capture:', err);
+            }
+        }
+
+        function stopCapture() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('captureBtn').disabled = true;
+            document.getElementById('recordingIndicator').classList.remove('active');
+            
+            updateStatus('Recording stopped. You can continue editing your steps or analyze the process.');
+        }
+
+        async function captureScreenshot() {
+            if (!mediaStream) return;
+
+            try {
+                const video = document.createElement('video');
+                video.srcObject = mediaStream;
+                video.play();
+
+                await new Promise(resolve => {
+                    video.onloadedmetadata = resolve;
+                });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+
+                const screenshot = canvas.toDataURL('image/png');
+                addStep(screenshot);
+                
+                updateStatus(`Step ${steps.length} captured! Continue your process and capture the next step.`, true);
+
+            } catch (err) {
+                console.error('Error capturing screenshot:', err);
+                alert('Failed to capture screenshot. Please try again.');
+            }
+        }
+
+        function addStep(screenshot = null) {
+            stepCounter++;
+            const step = {
+                id: stepCounter,
+                number: steps.length + 1,
+                screenshot: screenshot,
+                description: screenshot ? 'Describe what action was performed in this step...' : 'Describe this step...',
+                aiNote: null
+            };
+            steps.push(step);
+            renderSteps();
+            updateAnalyzeButton();
+        }
+
+        function addManualStep() {
+            addStep(null);
+            updateStatus('Manual step added. You can add a description or upload an image.');
+        }
+
+        function importFromFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    try {
+                        const text = await file.text();
+                        const importData = JSON.parse(text);
+                        
+                        if (!importData.steps || !Array.isArray(importData.steps)) {
+                            throw new Error('Invalid file format');
+                        }
+                        
+                        // Clear existing steps
+                        steps = [];
+                        stepCounter = 0;
+                        aiAnalysis = null;
+                        
+                        // Import the steps
+                        importData.steps.forEach(step => {
+                            stepCounter++;
+                            steps.push({
+                                id: stepCounter,
+                                number: steps.length + 1,
+                                screenshot: step.screenshot,
+                                description: step.description,
+                                aiNote: null
+                            });
+                        });
+                        
+                        // Update the title
+                        if (importData.title) {
+                            document.getElementById('guideTitle').value = importData.title;
+                        }
+                        
+                        renderSteps();
+                        updateAnalyzeButton();
+                        updateStatus(`Process imported successfully! ${steps.length} steps loaded. Click "Analyze Process" to optimize.`);
+                        
+                    } catch (error) {
+                        console.error('Import error:', error);
+                        alert('Failed to import file. Please make sure it\'s a valid export file.');
+                    }
+                }
+            };
+            input.click();
+        }
+
+        function updateAnalyzeButton() {
+            document.getElementById('analyzeBtn').disabled = steps.length === 0;
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            
+            if (steps.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>No steps yet</h3>
+                        <p>Start recording or add manual steps to create your documentation</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = steps.map((step, index) => {
+                let stepClass = 'step';
+                if (step.aiNote && step.aiNote.includes('redundant')) {
+                    stepClass += ' redundant';
+                } else if (step.aiNote && step.aiNote.includes('automat')) {
+                    stepClass += ' optimizable';
+                }
+
+                return `
+                <div class="${stepClass}" id="step-${step.id}">
+                    <div class="step-header">
+                        <div class="step-number">${step.number}</div>
+                        <div class="step-actions">
+                            <button class="btn btn-secondary btn-small" onclick="moveStepUp(${index})" ${index === 0 ? 'disabled' : ''}>
+                                ⬆️
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="moveStepDown(${index})" ${index === steps.length - 1 ? 'disabled' : ''}>
+                                ⬇️
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="uploadImageForStep(${index})">
+                                Upload Image
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deleteStep(${index})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    ${step.screenshot ? `<img src="${step.screenshot}" class="step-screenshot" alt="Step ${step.number} screenshot">` : ''}
+                    <textarea class="step-description" placeholder="Describe this step..." onchange="updateStepDescription(${index}, this.value)">${step.description}</textarea>
+                    ${step.aiNote ? `<div class="step-ai-note">💡 <strong>Analysis Insight:</strong> ${step.aiNote}</div>` : ''}
+                </div>
+            `}).join('');
+        }
+
+        function updateStepDescription(index, description) {
+            steps[index].description = description;
+        }
+
+        function deleteStep(index) {
+            if (confirm('Are you sure you want to delete this step?')) {
+                steps.splice(index, 1);
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+                updateAnalyzeButton();
+                updateStatus(`Step deleted. ${steps.length} steps remaining.`);
+            }
+        }
+
+        function moveStepUp(index) {
+            if (index > 0) {
+                [steps[index], steps[index - 1]] = [steps[index - 1], steps[index]];
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+            }
+        }
+
+        function moveStepDown(index) {
+            if (index < steps.length - 1) {
+                [steps[index], steps[index + 1]] = [steps[index + 1], steps[index]];
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+            }
+        }
+
+        function uploadImageForStep(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        steps[index].screenshot = event.target.result;
+                        renderSteps();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        async function analyzeWithAI() {
+            if (steps.length === 0) return;
+
+            const title = document.getElementById('guideTitle').value;
+            const aiContent = document.getElementById('aiContent');
+            
+            // Show loading state
+            aiContent.innerHTML = `
+                <div class="ai-loading">
+                    <div class="spinner"></div>
+                    <span>Analyzing your process...</span>
+                </div>
+            `;
+
+            try {
+                // Prepare the process description for AI
+                const processDescription = steps.map((step, index) => 
+                    `Step ${index + 1}: ${step.description}`
+                ).join('\n');
+
+                // Call Analysis API
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 1000,
+                        messages: [
+                            {
+                                role: "user",
+                                content: `You are a process optimization expert. Analyze this workflow and provide insights to make it more efficient.
+
+Process Title: ${title}
+
+Steps:
+${processDescription}
+
+Please provide:
+1. An efficiency score (0-100)
+2. Key inefficiencies identified
+3. Specific optimization suggestions
+4. Automation opportunities
+5. For each step, a brief note if it could be improved (mention the step number)
+
+Format your response as JSON with this structure:
+{
+  "efficiency_score": number,
+  "summary": "brief overview",
+  "inefficiencies": ["item1", "item2", ...],
+  "optimizations": [{"title": "...", "description": "..."}],
+  "automation_opportunities": ["item1", "item2", ...],
+  "step_notes": {"1": "note for step 1", "2": "note for step 2", ...}
+}`
+                            }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                const aiText = data.content.find(c => c.type === 'text')?.text || '';
+                
+                // Parse JSON from AI response
+                const jsonMatch = aiText.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    aiAnalysis = JSON.parse(jsonMatch[0]);
+                    
+                    // Update step notes
+                    if (aiAnalysis.step_notes) {
+                        Object.entries(aiAnalysis.step_notes).forEach(([stepNum, note]) => {
+                            const stepIndex = parseInt(stepNum) - 1;
+                            if (steps[stepIndex]) {
+                                steps[stepIndex].aiNote = note;
+                            }
+                        });
+                    }
+                    
+                    renderSteps();
+                    displayAIAnalysis(aiAnalysis);
+                    updateStatus('Analysis complete! Check the insights panel for optimization suggestions.');
+                } else {
+                    throw new Error('Could not parse AI response');
+                }
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                aiContent.innerHTML = `
+                    <div class="ai-section">
+                        <p style="color: #dc3545;">⚠️ Unable to complete Analysis. Please try again.</p>
+                    </div>
+                `;
+                updateStatus('Analysis failed. Please try again.');
+            }
+        }
+
+        function displayAIAnalysis(analysis) {
+            const aiContent = document.getElementById('aiContent');
+            
+            let html = `
+                <div class="efficiency-score">
+                    <div class="label">Process Efficiency Score</div>
+                    <div class="score">${analysis.efficiency_score}/100</div>
+                    <div class="label">${getEfficiencyLabel(analysis.efficiency_score)}</div>
+                </div>
+
+                <div class="ai-section">
+                    <h4>📊 Summary</h4>
+                    <p>${analysis.summary}</p>
+                </div>
+            `;
+
+            if (analysis.inefficiencies && analysis.inefficiencies.length > 0) {
+                html += `
+                    <div class="ai-section">
+                        <h4>⚠️ Key Inefficiencies</h4>
+                        ${analysis.inefficiencies.map(item => `
+                            <div class="suggestion-item">
+                                <span class="insight-badge warning">Issue</span>
+                                <p>${item}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (analysis.optimizations && analysis.optimizations.length > 0) {
+                html += `
+                    <div class="ai-section">
+                        <h4>💡 Optimization Suggestions</h4>
+                        ${analysis.optimizations.map(opt => `
+                            <div class="suggestion-item">
+                                <strong>${opt.title}</strong>
+                                <p>${opt.description}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (analysis.automation_opportunities && analysis.automation_opportunities.length > 0) {
+                html += `
+                    <div class="ai-section">
+                        <h4>🤖 Automation Opportunities</h4>
+                        ${analysis.automation_opportunities.map(item => `
+                            <div class="suggestion-item">
+                                <span class="insight-badge info">Automate</span>
+                                <p>${item}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            aiContent.innerHTML = html;
+        }
+
+        function getEfficiencyLabel(score) {
+            if (score >= 85) return 'Excellent Process';
+            if (score >= 70) return 'Good Process';
+            if (score >= 50) return 'Needs Improvement';
+            return 'Significant Optimization Needed';
+        }
+
+        function clearAll() {
+            if (steps.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear all steps? This cannot be undone.')) {
+                steps = [];
+                stepCounter = 0;
+                aiAnalysis = null;
+                renderSteps();
+                updateAnalyzeButton();
+                document.getElementById('aiContent').innerHTML = `
+                    <div class="empty-state" style="padding: 40px 20px;">
+                        <div class="empty-state-icon" style="font-size: 48px;">🧠</div>
+                        <p style="font-size: 14px;">Add steps to your guide, then click "Analyze Process" to get intelligent suggestions for optimizing your process flow.</p>
+                    </div>
+                `;
+                updateStatus('All steps cleared. Ready to start a new guide.');
+            }
+        }
+
+        function exportAsHTML() {
+            const title = document.getElementById('guideTitle').value;
+            const date = new Date().toLocaleDateString();
+            
+            let aiSection = '';
+            if (aiAnalysis) {
+                aiSection = `
+                    <div style="background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%); color: white; padding: 30px; border-radius: 6px; margin-bottom: 30px;">
+                        <h2 style="margin-bottom: 10px;">Process Analysis</h2>
+                        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">Efficiency Score: ${aiAnalysis.efficiency_score}/100</div>
+                        <p style="opacity: 0.9;">${aiAnalysis.summary}</p>
+                    </div>
+                `;
+            }
+            
+            let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { 
+            color: #2c5282; 
+            border-bottom: 3px solid #667eea; 
+            padding-bottom: 10px; 
+        }
+        .step { 
+            margin: 30px 0; 
+            padding: 20px; 
+            border: 1px solid #e9ecef; 
+            border-radius: 4px;
+            background: #f8f9fa;
+        }
+        .step-number { 
+            background: #2c5282; 
+            color: white; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 4px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            margin: 15px 0;
+        }
+        .meta { 
+            color: #6c757d; 
+            font-size: 14px; 
+            margin-bottom: 30px;
+        }
+        .ai-note {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 3px solid #667eea;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>${title}</h1>
+    <div class="meta">Created on ${date} • Generated by DocuCapture Analyst</div>
+    ${aiSection}
+    ${steps.map(step => `
+        <div class="step">
+            <div class="step-number">${step.number}</div>
+            ${step.screenshot ? `<img src="${step.screenshot}" alt="Step ${step.number}">` : ''}
+            <p>${step.description}</p>
+            ${step.aiNote ? `<div class="ai-note"><strong>💡 Analysis Insight:</strong> ${step.aiNote}</div>` : ''}
+        </div>
+    `).join('')}
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e9ecef; color: #6c757d; font-size: 14px;">
+        Generated by DocuCapture Analyst
+    </footer>
+</body>
+</html>`;
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Guide exported as HTML file with Analysis insights!');
+        }
+
+        function exportAsMarkdown() {
+            const title = document.getElementById('guideTitle').value;
+            const date = new Date().toLocaleDateString();
+            
+            let markdown = `# ${title}\n\n*Created on ${date} • Generated by DocuCapture Analyst*\n\n---\n\n`;
+            
+            if (aiAnalysis) {
+                markdown += `## Process Analysis\n\n`;
+                markdown += `**Efficiency Score:** ${aiAnalysis.efficiency_score}/100\n\n`;
+                markdown += `${aiAnalysis.summary}\n\n---\n\n`;
+            }
+            
+            steps.forEach(step => {
+                markdown += `## Step ${step.number}\n\n`;
+                if (step.screenshot) {
+                    markdown += `![Step ${step.number}](${step.screenshot})\n\n`;
+                }
+                markdown += `${step.description}\n\n`;
+                if (step.aiNote) {
+                    markdown += `> 💡 **Analysis Insight:** ${step.aiNote}\n\n`;
+                }
+                markdown += `---\n\n`;
+            });
+            
+            markdown += `*Generated by DocuCapture Analyst*`;
+
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Guide exported as Markdown file with Analysis insights!');
+        }
+
+        function printGuide() {
+            window.print();
+        }
+
+        // Initialize
+        updateStatus('Ready to start. Click "Start Recording" to begin capturing your process.');
+        updateAnalyzeButton();
+    </script>
+</body>
+</html>

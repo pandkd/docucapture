@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuCapture - Step-by-Step Documentation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #2c5282;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a365d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .status {
+            padding: 15px 30px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .status.recording {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .guide-title-section {
+            margin-bottom: 30px;
+        }
+
+        .guide-title-section input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: 600;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            border-color: #2c5282;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: #2c5282;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .step-screenshot {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+        }
+
+        .step-description {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .step-description:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .header, .controls, .export-section {
+                display: none;
+            }
+            
+            .step {
+                page-break-inside: avoid;
+            }
+        }
+
+        .recording-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+
+        .recording-indicator.active {
+            display: flex;
+        }
+
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 4px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .screenshot-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .screenshot-thumb {
+            position: relative;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-thumb:hover {
+            border-color: #2c5282;
+            transform: translateY(-2px);
+        }
+
+        .screenshot-thumb img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .screenshot-thumb .thumb-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="recording-indicator" id="recordingIndicator">
+        <div class="recording-dot"></div>
+        <span>Recording in progress...</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>DocuCapture</h1>
+            <p>Create step-by-step documentation with automatic screen capture</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <button class="btn btn-primary" id="startBtn" onclick="startCapture()">
+                    Start Recording
+                </button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopCapture()" disabled>
+                    Stop Recording
+                </button>
+                <button class="btn btn-success" id="captureBtn" onclick="captureScreenshot()" disabled>
+                    Capture Step
+                </button>
+                <button class="btn btn-secondary" id="addStepBtn" onclick="addManualStep()">
+                    Add Manual Step
+                </button>
+            </div>
+        </div>
+
+        <div class="status" id="statusBar">
+            Ready to start. Click "Start Recording" to begin capturing your process.
+        </div>
+
+        <div class="content">
+            <div class="guide-title-section">
+                <input type="text" id="guideTitle" class="input-field" placeholder="Enter guide title (e.g., 'How to Create a New Project')" value="Untitled Guide">
+            </div>
+
+            <div id="stepsContainer" class="steps-container">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No steps yet</h3>
+                    <p>Start recording or add manual steps to create your documentation</p>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <h3 style="margin-bottom: 15px;">Export Your Guide</h3>
+                <div class="export-options">
+                    <button class="btn btn-primary" onclick="exportAsHTML()">
+                        Export as HTML
+                    </button>
+                    <button class="btn btn-primary" onclick="exportAsMarkdown()">
+                        Export as Markdown
+                    </button>
+                    <button class="btn btn-warning" onclick="exportForAI()">
+                        Export for Analysis
+                    </button>
+                    <button class="btn btn-primary" onclick="printGuide()">
+                        Print / Save as PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAll()">
+                        Clear All Steps
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mediaStream = null;
+        let steps = [];
+        let stepCounter = 0;
+
+        function updateStatus(message, isRecording = false) {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.classList.add('active');
+            if (isRecording) {
+                statusBar.classList.add('recording');
+            } else {
+                statusBar.classList.remove('recording');
+            }
+        }
+
+        async function startCapture() {
+            try {
+                mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { mediaSource: 'screen' }
+                });
+
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('captureBtn').disabled = false;
+                document.getElementById('recordingIndicator').classList.add('active');
+                
+                updateStatus('Recording started! Click "Capture Step" whenever you complete an action.', true);
+
+                // Auto-stop if user stops sharing
+                mediaStream.getVideoTracks()[0].addEventListener('ended', () => {
+                    stopCapture();
+                });
+
+            } catch (err) {
+                alert('Screen capture was cancelled or not supported. Please try again.');
+                console.error('Error starting capture:', err);
+            }
+        }
+
+        function stopCapture() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('captureBtn').disabled = true;
+            document.getElementById('recordingIndicator').classList.remove('active');
+            
+            updateStatus('Recording stopped. You can continue editing your steps or export your guide.');
+        }
+
+        async function captureScreenshot() {
+            if (!mediaStream) return;
+
+            try {
+                const video = document.createElement('video');
+                video.srcObject = mediaStream;
+                video.play();
+
+                await new Promise(resolve => {
+                    video.onloadedmetadata = resolve;
+                });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+
+                const screenshot = canvas.toDataURL('image/png');
+                addStep(screenshot);
+                
+                updateStatus(`Step ${steps.length} captured! Continue your process and capture the next step.`, true);
+
+            } catch (err) {
+                console.error('Error capturing screenshot:', err);
+                alert('Failed to capture screenshot. Please try again.');
+            }
+        }
+
+        function addStep(screenshot = null) {
+            stepCounter++;
+            const step = {
+                id: stepCounter,
+                number: steps.length + 1,
+                screenshot: screenshot,
+                description: screenshot ? 'Describe what action was performed in this step...' : 'Describe this step...'
+            };
+            steps.push(step);
+            renderSteps();
+        }
+
+        function addManualStep() {
+            addStep(null);
+            updateStatus('Manual step added. You can add a description or upload an image.');
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            
+            if (steps.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>No steps yet</h3>
+                        <p>Start recording or add manual steps to create your documentation</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = steps.map((step, index) => `
+                <div class="step" id="step-${step.id}">
+                    <div class="step-header">
+                        <div class="step-number">${step.number}</div>
+                        <div class="step-actions">
+                            <button class="btn btn-secondary btn-small" onclick="moveStepUp(${index})" ${index === 0 ? 'disabled' : ''}>
+                                ⬆️
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="moveStepDown(${index})" ${index === steps.length - 1 ? 'disabled' : ''}>
+                                ⬇️
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="uploadImageForStep(${index})">
+                                Upload Image
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deleteStep(${index})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    ${step.screenshot ? `<img src="${step.screenshot}" class="step-screenshot" alt="Step ${step.number} screenshot">` : ''}
+                    <textarea class="step-description" placeholder="Describe this step..." onchange="updateStepDescription(${index}, this.value)">${step.description}</textarea>
+                </div>
+            `).join('');
+        }
+
+        function updateStepDescription(index, description) {
+            steps[index].description = description;
+        }
+
+        function deleteStep(index) {
+            if (confirm('Are you sure you want to delete this step?')) {
+                steps.splice(index, 1);
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+                updateStatus(`Step deleted. ${steps.length} steps remaining.`);
+            }
+        }
+
+        function moveStepUp(index) {
+            if (index > 0) {
+                [steps[index], steps[index - 1]] = [steps[index - 1], steps[index]];
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+            }
+        }
+
+        function moveStepDown(index) {
+            if (index < steps.length - 1) {
+                [steps[index], steps[index + 1]] = [steps[index + 1], steps[index]];
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+            }
+        }
+
+        function uploadImageForStep(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        steps[index].screenshot = event.target.result;
+                        renderSteps();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function clearAll() {
+            if (steps.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear all steps? This cannot be undone.')) {
+                steps = [];
+                stepCounter = 0;
+                renderSteps();
+                updateStatus('All steps cleared. Ready to start a new guide.');
+            }
+        }
+
+        function exportAsHTML() {
+            const title = document.getElementById('guideTitle').value;
+            const date = new Date().toLocaleDateString();
+            
+            let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { 
+            color: #2c5282; 
+            border-bottom: 3px solid #667eea; 
+            padding-bottom: 10px; 
+        }
+        .step { 
+            margin: 30px 0; 
+            padding: 20px; 
+            border: 1px solid #e9ecef; 
+            border-radius: 4px;
+            background: #f8f9fa;
+        }
+        .step-number { 
+            background: #2c5282; 
+            color: white; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 4px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            margin: 15px 0;
+        }
+        .meta { 
+            color: #6c757d; 
+            font-size: 14px; 
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>${title}</h1>
+    <div class="meta">Created on ${date}</div>
+    ${steps.map(step => `
+        <div class="step">
+            <div class="step-number">${step.number}</div>
+            ${step.screenshot ? `<img src="${step.screenshot}" alt="Step ${step.number}">` : ''}
+            <p>${step.description}</p>
+        </div>
+    `).join('')}
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e9ecef; color: #6c757d; font-size: 14px;">
+        Generated by DocuCapture
+    </footer>
+</body>
+</html>`;
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Guide exported as HTML file!');
+        }
+
+        function exportAsMarkdown() {
+            const title = document.getElementById('guideTitle').value;
+            const date = new Date().toLocaleDateString();
+            
+            let markdown = `# ${title}\n\n*Created on ${date}*\n\n---\n\n`;
+            
+            steps.forEach(step => {
+                markdown += `## Step ${step.number}\n\n`;
+                if (step.screenshot) {
+                    markdown += `![Step ${step.number}](${step.screenshot})\n\n`;
+                }
+                markdown += `${step.description}\n\n---\n\n`;
+            });
+            
+            markdown += `*Generated by DocuCapture*`;
+
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Guide exported as Markdown file!');
+        }
+
+        function printGuide() {
+            window.print();
+        }
+
+        function exportForAI() {
+            const title = document.getElementById('guideTitle').value;
+            const exportData = {
+                title: title,
+                steps: steps,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_ai_export.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Process exported! Import this file into DocuCapture Analyst for analysis.');
+        }
+
+        // Initialize
+        updateStatus('Ready to start. Click "Start Recording" to begin capturing your process.');
+    </script>
+</body>
+</html>
