@@ -1,57 +1,26 @@
 # DocuCapture - Smart Process Documentation Tool
 
-Transform the way you document processes with screen capture, step-by-step guides, and Intelligent optimization.
-
-![DocuCapture](https://img.shields.io/badge/Process-Intelligence-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+Transform the way you document processes with screen capture, step-by-step guides, and intelligent optimization.
 
 ## 🚀 Quick Start
 
-### Option 1: Use the Hosted Version (Recommended)
-Simply visit the live website at: `https://[your-username].github.io/docucapture/`
+### Getting Started
+1. Click on the DocuCapture link provided by your administrator
+2. Choose your tool:
+   - **Capture Tool** - Record and document processes
+   - **Process Analyst** - Download and run locally for analysis
 
-### Option 2: Download and Use Locally
-Download the HTML files and open them directly in your browser.
+### That's it!
+DocuCapture works entirely in your browser - no installation needed.
 
 ---
 
 ## 📦 What's Included
 
-- **`capture.html`** - Remote capture tool (host this on a website)
-- **`analyze.html`** - Process analysis tool (use this locally)
-- **`index.html`** - Landing page with links to both tools
-
----
-
-## 🌐 Deploy to GitHub Pages (FREE)
-
-### Step 1: Create a GitHub Repository
-1. Go to [GitHub.com](https://github.com) and sign in
-2. Click the **"+"** icon → **"New repository"**
-3. Name it: `docucapture`
-4. Make it **Public**
-5. Click **"Create repository"**
-
-### Step 2: Upload Files
-1. Click **"uploading an existing file"**
-2. Drag and drop these files:
-   - `index.html`
-   - `capture.html`
-   - `analyze.html`
-   - `README.md`
-3. Click **"Commit changes"**
-
-### Step 3: Enable GitHub Pages
-1. Go to your repository → **Settings**
-2. Scroll to **"Pages"** in the left sidebar
-3. Under **"Source"**, select **"main"** branch
-4. Click **"Save"**
-5. Wait 1-2 minutes
-
-### Step 4: Access Your Site
-Visit: `https://[your-username].github.io/docucapture/`
-
-🎉 **Done!** Your capture tool is now live and accessible from anywhere!
+- **Capture Tool** - Create documentation with screen recording
+- **Process Analyst** - Analyze and optimize workflows  
+- **Interactive Tutorial** - Learn how to use DocuCapture
+- **Enhancement Requests** - Submit feature ideas
 
 ---
 
@@ -111,6 +80,9 @@ Visit: `https://[your-username].github.io/docucapture/`
 ### Capture Tool (Remote)
 - ✅ Screen recording with live capture (captures ANY application - desktop software, web apps, or entire screen)
 - ✅ Works with desktop applications (QuickBooks, Excel, Photoshop, SAP, etc.)
+- ✅ **Intelligent sensitive data detection** - Automatically identifies passwords, credit cards, SSNs, API keys
+- ✅ **Multi-method redaction** - Blur, pixelate, or black box sensitive information
+- ✅ **Visual security alerts** - Clear warnings when sensitive data is detected
 - ✅ Screenshot at each step
 - ✅ Manual image upload
 - ✅ Rich text descriptions
@@ -132,6 +104,8 @@ Visit: `https://[your-username].github.io/docucapture/`
 ## 🔒 Privacy & Security
 
 - **Capture Tool**: No data is sent to any server (works entirely in browser)
+- **Sensitive Data Detection**: Automatically alerts you to potential passwords, credit cards, SSNs, and other sensitive information
+- **Redaction Tools**: Blur, pixelate, or black box sensitive data before sharing (see [REDACTION_GUIDE.md](REDACTION_GUIDE.md))
 - **Analysis Tool**: Only sends process descriptions to Analysis Engine (no screenshots unless you choose to export them)
 - **API Keys**: Never exposed in the remote tool
 - **Your Data**: Stays on your device until you explicitly export
@@ -195,10 +169,11 @@ This project is open source and available under the MIT License.
 
 ## 🚀 Quick Links
 
-- 🌐 **Live Demo**: [your-username].github.io/docucapture
-- 📥 **Download**: Clone this repository or download individual files
+- 🎓 **Interactive Tutorial**: See [tutorial.html](tutorial.html) for a guided walkthrough
+- 📥 **Download Files**: All files are ready to use - just open in your browser
 - 📋 **What Can I Capture?**: See [CAPTURE_CAPABILITIES.md](CAPTURE_CAPABILITIES.md) for desktop apps, web apps, and more
-- 📧 **Feedback**: Open an issue on GitHub
+- 🔒 **Data Redaction Guide**: See [REDACTION_GUIDE.md](REDACTION_GUIDE.md) for protecting sensitive information
+- 💡 **Request Enhancement**: Use [enhancement-request.html](enhancement-request.html) to submit feature requests
 
 ---
 

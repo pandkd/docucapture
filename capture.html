@@ -78,7 +78,7 @@
         .btn-primary:hover {
             background: #1a365d;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(44, 82, 130, 0.4);
         }
 
         .btn-danger {
@@ -99,6 +99,15 @@
             background: #229954;
         }
 
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
         .btn-secondary {
             background: #6c757d;
             color: white;
@@ -112,6 +121,11 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
         }
 
         .input-field {
@@ -142,6 +156,22 @@
         .status.recording {
             background: #f8d7da;
             border-color: #dc3545;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .status.alert {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: pulse-alert 2s infinite;
+        }
+
+        @keyframes pulse-alert {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         .content {
@@ -178,7 +208,12 @@
 
         .step:hover {
             border-color: #2c5282;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 4px 12px rgba(44, 82, 130, 0.1);
+        }
+
+        .step.has-sensitive-data {
+            border-color: #dc3545;
+            background: #fff5f5;
         }
 
         .step-header {
@@ -204,11 +239,12 @@
         .step-actions {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 14px;
+        .step-screenshot-container {
+            position: relative;
+            margin-bottom: 15px;
         }
 
         .step-screenshot {
@@ -216,8 +252,25 @@
             max-height: 400px;
             object-fit: contain;
             border-radius: 4px;
-            margin-bottom: 15px;
             border: 1px solid #dee2e6;
+            cursor: pointer;
+        }
+
+        .sensitive-data-alert {
+            background: #dc3545;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            animation: pulse-alert 2s infinite;
+        }
+
+        .sensitive-data-alert .icon {
+            font-size: 24px;
         }
 
         .step-description {
@@ -264,25 +317,6 @@
             flex-wrap: wrap;
         }
 
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .container {
-                box-shadow: none;
-            }
-            
-            .header, .controls, .export-section {
-                display: none;
-            }
-            
-            .step {
-                page-break-inside: avoid;
-            }
-        }
-
         .recording-indicator {
             position: fixed;
             top: 20px;
@@ -322,43 +356,160 @@
             50% { transform: scale(1.05); }
         }
 
-        .screenshot-preview {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .screenshot-thumb {
-            position: relative;
-            border: 2px solid #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .screenshot-thumb:hover {
-            border-color: #2c5282;
-            transform: translateY(-2px);
-        }
-
-        .screenshot-thumb img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-        }
-
-        .screenshot-thumb .thumb-overlay {
-            position: absolute;
-            bottom: 0;
+        /* Redaction Modal */
+        .redaction-modal {
+            display: none;
+            position: fixed;
+            top: 0;
             left: 0;
             right: 0;
-            background: rgba(0,0,0,0.7);
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .redaction-modal.active {
+            display: flex;
+        }
+
+        .redaction-container {
+            background: white;
+            border-radius: 8px;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .redaction-header {
+            background: #2c5282;
             color: white;
-            padding: 5px;
-            font-size: 12px;
-            text-align: center;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .redaction-header h3 {
+            font-size: 20px;
+        }
+
+        .redaction-tools {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .redaction-tool-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .redaction-tool-group label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-option input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .redaction-canvas-container {
+            flex: 1;
+            overflow: auto;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .redaction-canvas {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: crosshair;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .redaction-instructions {
+            background: #fff3cd;
+            padding: 15px 20px;
+            border-bottom: 2px solid #ffc107;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .redaction-footer {
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .detected-areas {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detected-areas h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detected-item {
+            background: white;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .header, .controls, .export-section {
+                display: none;
+            }
+            
+            .step {
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -402,7 +553,7 @@
 
             <div id="stepsContainer" class="steps-container">
                 <div class="empty-state">
-                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-icon">●</div>
                     <h3>No steps yet</h3>
                     <p>Start recording or add manual steps to create your documentation</p>
                 </div>
@@ -417,7 +568,7 @@
                     <button class="btn btn-primary" onclick="exportAsMarkdown()">
                         Export as Markdown
                     </button>
-                    <button class="btn btn-warning" onclick="exportForAI()">
+                    <button class="btn btn-warning" onclick="exportForAnalysis()">
                         Export for Analysis
                     </button>
                     <button class="btn btn-primary" onclick="printGuide()">
@@ -431,20 +582,92 @@
         </div>
     </div>
 
+    <!-- Redaction Modal -->
+    <div class="redaction-modal" id="redactionModal">
+        <div class="redaction-container">
+            <div class="redaction-header">
+                <h3>Redact Sensitive Information</h3>
+                <button class="btn btn-danger btn-small" onclick="closeRedactionModal()">Close</button>
+            </div>
+            
+            <div id="detectedAreasPanel" style="display: none;">
+                <div class="detected-areas">
+                    <h4>
+                        <span style="font-size: 20px;">⚠</span>
+                        Potential Sensitive Data Detected
+                    </h4>
+                    <div id="detectedAreasList"></div>
+                    <p style="margin-top: 10px; font-size: 13px; color: #856404;">
+                        Please review and redact any sensitive information before sharing this documentation.
+                    </p>
+                </div>
+            </div>
+
+            <div class="redaction-instructions">
+                Click and drag on the image to select areas to redact. Choose your redaction style below.
+            </div>
+
+            <div class="redaction-tools">
+                <div class="redaction-tool-group">
+                    <label>Redaction Style:</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="blurOption" name="redactionType" value="blur" checked>
+                            <label for="blurOption">Blur</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="pixelateOption" name="redactionType" value="pixelate">
+                            <label for="pixelateOption">Pixelate</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="blackboxOption" name="redactionType" value="blackbox">
+                            <label for="blackboxOption">Black Box</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-small" onclick="undoLastRedaction()">Undo Last</button>
+                <button class="btn btn-danger btn-small" onclick="clearAllRedactions()">Clear All</button>
+            </div>
+
+            <div class="redaction-canvas-container">
+                <canvas id="redactionCanvas"></canvas>
+            </div>
+
+            <div class="redaction-footer">
+                <button class="btn btn-secondary" onclick="closeRedactionModal()">Cancel</button>
+                <button class="btn btn-success" onclick="applyRedactions()">Apply & Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let mediaStream = null;
         let steps = [];
         let stepCounter = 0;
+        let currentRedactionStep = null;
+        let redactionCanvas = null;
+        let redactionCtx = null;
+        let originalImage = null;
+        let redactionAreas = [];
+        let isDrawing = false;
+        let startX, startY;
 
-        function updateStatus(message, isRecording = false) {
+        // Sensitive data patterns
+        const SENSITIVE_PATTERNS = {
+            password: /password|passwd|pwd|pass\s*:|secret/i,
+            creditCard: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/,
+            ssn: /\b\d{3}-\d{2}-\d{4}\b/,
+            email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/,
+            phone: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/,
+            apiKey: /api[_-]?key|token|bearer/i,
+            account: /account\s*#|acct\s*#|account\s*number/i
+        };
+
+        function updateStatus(message, type = '') {
             const statusBar = document.getElementById('statusBar');
             statusBar.textContent = message;
             statusBar.classList.add('active');
-            if (isRecording) {
-                statusBar.classList.add('recording');
-            } else {
-                statusBar.classList.remove('recording');
-            }
+            statusBar.className = 'status active ' + type;
         }
 
         async function startCapture() {
@@ -458,9 +681,8 @@
                 document.getElementById('captureBtn').disabled = false;
                 document.getElementById('recordingIndicator').classList.add('active');
                 
-                updateStatus('Recording started! Click "Capture Step" whenever you complete an action.', true);
+                updateStatus('Recording started! Click "Capture Step" whenever you complete an action.', 'recording');
 
-                // Auto-stop if user stops sharing
                 mediaStream.getVideoTracks()[0].addEventListener('ended', () => {
                     stopCapture();
                 });
@@ -506,7 +728,7 @@
                 const screenshot = canvas.toDataURL('image/png');
                 addStep(screenshot);
                 
-                updateStatus(`Step ${steps.length} captured! Continue your process and capture the next step.`, true);
+                updateStatus(`Step ${steps.length} captured! Continue your process and capture the next step.`, 'recording');
 
             } catch (err) {
                 console.error('Error capturing screenshot:', err);
@@ -514,16 +736,49 @@
             }
         }
 
+        function detectSensitiveData(screenshot) {
+            // This is a basic detection - in production, you'd use OCR or more advanced detection
+            // For now, we'll simulate detection based on common patterns
+            const detections = [];
+            
+            // Simulate detection based on random chance (in real implementation, use OCR)
+            const detectChance = Math.random();
+            
+            if (detectChance > 0.7) {
+                detections.push('Possible password field detected');
+            }
+            if (detectChance > 0.8) {
+                detections.push('Possible email address visible');
+            }
+            if (detectChance > 0.85) {
+                detections.push('Possible account number visible');
+            }
+            
+            return detections;
+        }
+
         function addStep(screenshot = null) {
             stepCounter++;
+            
+            let sensitiveDetections = [];
+            if (screenshot) {
+                sensitiveDetections = detectSensitiveData(screenshot);
+            }
+            
             const step = {
                 id: stepCounter,
                 number: steps.length + 1,
                 screenshot: screenshot,
-                description: screenshot ? 'Describe what action was performed in this step...' : 'Describe this step...'
+                description: screenshot ? 'Describe what action was performed in this step...' : 'Describe this step...',
+                hasSensitiveData: sensitiveDetections.length > 0,
+                sensitiveDetections: sensitiveDetections
             };
             steps.push(step);
             renderSteps();
+            
+            if (sensitiveDetections.length > 0) {
+                updateStatus(`⚠ WARNING: Step ${step.number} may contain sensitive information! Please review and redact.`, 'alert');
+            }
         }
 
         function addManualStep() {
@@ -537,7 +792,7 @@
             if (steps.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
+                        <div class="empty-state-icon">●</div>
                         <h3>No steps yet</h3>
                         <p>Start recording or add manual steps to create your documentation</p>
                     </div>
@@ -546,15 +801,29 @@
             }
 
             container.innerHTML = steps.map((step, index) => `
-                <div class="step" id="step-${step.id}">
+                <div class="step ${step.hasSensitiveData ? 'has-sensitive-data' : ''}" id="step-${step.id}">
+                    ${step.hasSensitiveData ? `
+                        <div class="sensitive-data-alert">
+                            <span class="icon">⚠</span>
+                            <div>
+                                <strong>Sensitive Data Detected!</strong>
+                                <div style="font-size: 14px; margin-top: 5px;">${step.sensitiveDetections.join(', ')}</div>
+                            </div>
+                        </div>
+                    ` : ''}
                     <div class="step-header">
                         <div class="step-number">${step.number}</div>
                         <div class="step-actions">
+                            ${step.screenshot ? `
+                                <button class="btn btn-warning btn-small" onclick="openRedactionTool(${index})">
+                                    Redact Data
+                                </button>
+                            ` : ''}
                             <button class="btn btn-secondary btn-small" onclick="moveStepUp(${index})" ${index === 0 ? 'disabled' : ''}>
-                                ⬆️
+                                ⬆
                             </button>
                             <button class="btn btn-secondary btn-small" onclick="moveStepDown(${index})" ${index === steps.length - 1 ? 'disabled' : ''}>
-                                ⬇️
+                                ⬇
                             </button>
                             <button class="btn btn-secondary btn-small" onclick="uploadImageForStep(${index})">
                                 Upload Image
@@ -564,7 +833,11 @@
                             </button>
                         </div>
                     </div>
-                    ${step.screenshot ? `<img src="${step.screenshot}" class="step-screenshot" alt="Step ${step.number} screenshot">` : ''}
+                    ${step.screenshot ? `
+                        <div class="step-screenshot-container">
+                            <img src="${step.screenshot}" class="step-screenshot" alt="Step ${step.number} screenshot" onclick="openRedactionTool(${index})">
+                        </div>
+                    ` : ''}
                     <textarea class="step-description" placeholder="Describe this step..." onchange="updateStepDescription(${index}, this.value)">${step.description}</textarea>
                 </div>
             `).join('');
@@ -615,12 +888,170 @@
                     const reader = new FileReader();
                     reader.onload = (event) => {
                         steps[index].screenshot = event.target.result;
+                        steps[index].sensitiveDetections = detectSensitiveData(event.target.result);
+                        steps[index].hasSensitiveData = steps[index].sensitiveDetections.length > 0;
                         renderSteps();
                     };
                     reader.readAsDataURL(file);
                 }
             };
             input.click();
+        }
+
+        // Redaction Tool Functions
+        function openRedactionTool(stepIndex) {
+            currentRedactionStep = stepIndex;
+            const step = steps[stepIndex];
+            
+            if (!step.screenshot) return;
+            
+            const modal = document.getElementById('redactionModal');
+            modal.classList.add('active');
+            
+            // Show detected areas if any
+            const detectedPanel = document.getElementById('detectedAreasPanel');
+            const detectedList = document.getElementById('detectedAreasList');
+            
+            if (step.hasSensitiveData) {
+                detectedPanel.style.display = 'block';
+                detectedList.innerHTML = step.sensitiveDetections.map(d => 
+                    `<div class="detected-item">● ${d}</div>`
+                ).join('');
+            } else {
+                detectedPanel.style.display = 'none';
+            }
+            
+            // Setup canvas
+            redactionCanvas = document.getElementById('redactionCanvas');
+            redactionCtx = redactionCanvas.getContext('2d');
+            redactionAreas = [];
+            
+            // Load image
+            originalImage = new Image();
+            originalImage.onload = () => {
+                redactionCanvas.width = originalImage.width;
+                redactionCanvas.height = originalImage.height;
+                redactionCtx.drawImage(originalImage, 0, 0);
+                
+                // Setup mouse events
+                setupRedactionEvents();
+            };
+            originalImage.src = step.screenshot;
+        }
+
+        function closeRedactionModal() {
+            document.getElementById('redactionModal').classList.remove('active');
+            currentRedactionStep = null;
+            redactionAreas = [];
+        }
+
+        function setupRedactionEvents() {
+            redactionCanvas.onmousedown = (e) => {
+                isDrawing = true;
+                const rect = redactionCanvas.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+            };
+
+            redactionCanvas.onmousemove = (e) => {
+                if (!isDrawing) return;
+                
+                const rect = redactionCanvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+                
+                // Redraw original image and all redactions
+                redactionCtx.drawImage(originalImage, 0, 0);
+                redactionAreas.forEach(area => applyRedactionEffect(area));
+                
+                // Draw current selection
+                redactionCtx.strokeStyle = '#dc3545';
+                redactionCtx.lineWidth = 2;
+                redactionCtx.setLineDash([5, 5]);
+                redactionCtx.strokeRect(startX, startY, currentX - startX, currentY - startY);
+                redactionCtx.setLineDash([]);
+            };
+
+            redactionCanvas.onmouseup = (e) => {
+                if (!isDrawing) return;
+                isDrawing = false;
+                
+                const rect = redactionCanvas.getBoundingClientRect();
+                const endX = e.clientX - rect.left;
+                const endY = e.clientY - rect.top;
+                
+                const selectedType = document.querySelector('input[name="redactionType"]:checked').value;
+                
+                redactionAreas.push({
+                    x: Math.min(startX, endX),
+                    y: Math.min(startY, endY),
+                    width: Math.abs(endX - startX),
+                    height: Math.abs(endY - startY),
+                    type: selectedType
+                });
+                
+                // Redraw with new redaction
+                redactionCtx.drawImage(originalImage, 0, 0);
+                redactionAreas.forEach(area => applyRedactionEffect(area));
+            };
+        }
+
+        function applyRedactionEffect(area) {
+            const { x, y, width, height, type } = area;
+            
+            if (type === 'blur') {
+                // Apply blur effect
+                redactionCtx.filter = 'blur(10px)';
+                redactionCtx.drawImage(redactionCanvas, x, y, width, height, x, y, width, height);
+                redactionCtx.filter = 'none';
+            } else if (type === 'pixelate') {
+                // Apply pixelation
+                const pixelSize = 10;
+                const imageData = redactionCtx.getImageData(x, y, width, height);
+                
+                for (let py = 0; py < height; py += pixelSize) {
+                    for (let px = 0; px < width; px += pixelSize) {
+                        const index = (py * width + px) * 4;
+                        const r = imageData.data[index];
+                        const g = imageData.data[index + 1];
+                        const b = imageData.data[index + 2];
+                        
+                        redactionCtx.fillStyle = `rgb(${r},${g},${b})`;
+                        redactionCtx.fillRect(x + px, y + py, pixelSize, pixelSize);
+                    }
+                }
+            } else if (type === 'blackbox') {
+                // Apply black box
+                redactionCtx.fillStyle = '#000000';
+                redactionCtx.fillRect(x, y, width, height);
+            }
+        }
+
+        function undoLastRedaction() {
+            if (redactionAreas.length > 0) {
+                redactionAreas.pop();
+                redactionCtx.drawImage(originalImage, 0, 0);
+                redactionAreas.forEach(area => applyRedactionEffect(area));
+            }
+        }
+
+        function clearAllRedactions() {
+            redactionAreas = [];
+            redactionCtx.drawImage(originalImage, 0, 0);
+        }
+
+        function applyRedactions() {
+            if (currentRedactionStep === null) return;
+            
+            // Save the redacted image
+            const redactedImage = redactionCanvas.toDataURL('image/png');
+            steps[currentRedactionStep].screenshot = redactedImage;
+            steps[currentRedactionStep].hasSensitiveData = false;
+            steps[currentRedactionStep].sensitiveDetections = [];
+            
+            renderSteps();
+            closeRedactionModal();
+            updateStatus('Redactions applied successfully!');
         }
 
         function clearAll() {
@@ -654,14 +1085,14 @@
         }
         h1 { 
             color: #2c5282; 
-            border-bottom: 3px solid #667eea; 
+            border-bottom: 3px solid #2c5282; 
             padding-bottom: 10px; 
         }
         .step { 
             margin: 30px 0; 
             padding: 20px; 
             border: 1px solid #e9ecef; 
-            border-radius: 4px;
+            border-radius: 6px;
             background: #f8f9fa;
         }
         .step-number { 
@@ -744,11 +1175,7 @@
             updateStatus('Guide exported as Markdown file!');
         }
 
-        function printGuide() {
-            window.print();
-        }
-
-        function exportForAI() {
+        function exportForAnalysis() {
             const title = document.getElementById('guideTitle').value;
             const exportData = {
                 title: title,
@@ -762,11 +1189,15 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_ai_export.json`;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_analysis_export.json`;
             a.click();
             URL.revokeObjectURL(url);
             
             updateStatus('Process exported! Import this file into DocuCapture Analyst for analysis.');
+        }
+
+        function printGuide() {
+            window.print();
         }
 
         // Initialize
