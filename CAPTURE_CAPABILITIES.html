@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Can DocuCapture Record? - DocuCapture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            color: #1e40af;
+            font-size: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #2c5282;
+            font-size: 22px;
+            margin: 25px 0 15px;
+        }
+
+        .section p, .section li {
+            color: #495057;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .category-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .category-card h3 {
+            color: #1e40af;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-card li {
+            padding: 8px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .category-card li::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .option-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2c5282;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .option-box h4 {
+            color: #1e40af;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .option-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .option-box li {
+            padding: 5px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .option-box li.pro::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .option-box li.warning::before {
+            content: "⚠";
+            color: #ffc107;
+        }
+
+        .option-box li.con::before {
+            content: "✗";
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            border: 2px solid #2c5282;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .example-box h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .example-box strong {
+            color: #2c5282;
+            display: block;
+            margin: 15px 0 8px;
+        }
+
+        .example-box ul, .example-box ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .example-box li {
+            margin: 5px 0;
+        }
+
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .privacy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .privacy-box {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .privacy-box.will-not {
+            border-color: #27ae60;
+            background: #f0f9f4;
+        }
+
+        .privacy-box.will {
+            border-color: #ffc107;
+            background: #fffbf0;
+        }
+
+        .privacy-box h4 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .privacy-box.will-not h4 {
+            color: #27ae60;
+        }
+
+        .privacy-box.will h4 {
+            color: #856404;
+        }
+
+        .privacy-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .privacy-box li {
+            padding: 5px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .privacy-box.will-not li::before {
+            content: "✗";
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .privacy-box.will li::before {
+            content: "✓";
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .best-practice {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .best-practice p {
+            color: #856404;
+            font-weight: 600;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .tip-category {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .tip-category h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .tip-category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tip-category li {
+            padding: 8px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .tip-category li.do::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .tip-category li.dont::before {
+            content: "✗";
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .troubleshooting {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .troubleshooting h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .troubleshooting ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .troubleshooting li {
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        .requirements {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .requirements h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .requirements ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .requirements li {
+            padding: 5px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .requirements li::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f7ff 100%);
+            border: 2px solid #2c5282;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .highlight-box p {
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 What Can DocuCapture Record?</h1>
+            <p>Comprehensive guide to capture capabilities</p>
+        </div>
+
+        <div class="content">
+            <a href="index.html" class="back-button">← Back to Home</a>
+
+            <!-- YES - You Can Capture -->
+            <div class="section">
+                <h2>✅ YES - You Can Capture These</h2>
+
+                <div class="category-grid">
+                    <div class="category-card">
+                        <h3>💼 Desktop Applications</h3>
+                        <ul>
+                            <li><strong>Accounting:</strong> QuickBooks, Xero, FreshBooks, Sage</li>
+                            <li><strong>Microsoft Office:</strong> Excel, Word, PowerPoint, Outlook</li>
+                            <li><strong>Design:</strong> Photoshop, Illustrator, AutoCAD, Figma</li>
+                            <li><strong>Enterprise:</strong> SAP, Oracle, Salesforce Desktop</li>
+                            <li><strong>Development:</strong> Visual Studio, IntelliJ, VS Code</li>
+                            <li><strong>Database:</strong> SQL Server, MySQL Workbench</li>
+                            <li><strong>Communication:</strong> Slack, Teams, Zoom</li>
+                            <li><strong>Any App:</strong> If it shows on your screen, we can capture it!</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-card">
+                        <h3>🌐 Web Applications</h3>
+                        <ul>
+                            <li><strong>CRM:</strong> Salesforce, HubSpot, Zoho</li>
+                            <li><strong>Project Management:</strong> Asana, Jira, Monday.com, Trello</li>
+                            <li><strong>Google Workspace:</strong> Docs, Sheets, Gmail, Drive</li>
+                            <li><strong>E-commerce:</strong> Shopify, WooCommerce, Amazon Seller</li>
+                            <li><strong>Any Website:</strong> Internal tools, custom apps, admin panels</li>
+                        </ul>
+                    </div>
+
+                    <div class="category-card">
+                        <h3>🖥️ Your Entire Screen</h3>
+                        <ul>
+                            <li>Multi-application workflows</li>
+                            <li>Switching between programs</li>
+                            <li>Everything visible on your monitor</li>
+                            <li>Multiple windows at once</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- How to Select What to Capture -->
+            <div class="section">
+                <h2>📸 How to Select What to Capture</h2>
+                <p>When you click "Start Recording", you'll see three options:</p>
+
+                <div class="option-box">
+                    <h4>Option 1: Application Window (Recommended)</h4>
+                    <ul>
+                        <li class="pro">Best for: Single application like QuickBooks</li>
+                        <li class="pro">Pros: Focused, keeps other apps private</li>
+                        <li class="pro">Example: "QuickBooks Desktop 2024"</li>
+                    </ul>
+                </div>
+
+                <div class="option-box">
+                    <h4>Option 2: Entire Screen</h4>
+                    <ul>
+                        <li class="pro">Best for: Multi-app workflows</li>
+                        <li class="pro">Pros: Captures everything, natural workflow</li>
+                        <li class="warning">Note: Shows all windows and notifications</li>
+                    </ul>
+                </div>
+
+                <div class="option-box">
+                    <h4>Option 3: Browser Tab</h4>
+                    <ul>
+                        <li class="pro">Best for: Web apps only</li>
+                        <li class="pro">Pros: Clean capture of web applications</li>
+                        <li class="con">Won't work for: Desktop software like QuickBooks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Real-World Examples -->
+            <div class="section">
+                <h2>💡 Real-World Examples</h2>
+
+                <div class="example-box">
+                    <h4>Example 1: QuickBooks Invoice Process</h4>
+                    <strong>Scenario:</strong>
+                    <p>Document how to create an invoice in QuickBooks Desktop</p>
+                    
+                    <strong>Setup:</strong>
+                    <ol>
+                        <li>Click "Start Recording"</li>
+                        <li>Choose "Application Window"</li>
+                        <li>Select "QuickBooks" from the list</li>
+                        <li>Click "Share"</li>
+                    </ol>
+                    
+                    <strong>Result:</strong>
+                    <p>Only QuickBooks is captured, your email and other apps stay private</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 2: Excel to QuickBooks Workflow</h4>
+                    <strong>Scenario:</strong>
+                    <p>Document process of importing data from Excel into QuickBooks</p>
+                    
+                    <strong>Setup:</strong>
+                    <ol>
+                        <li>Click "Start Recording"</li>
+                        <li>Choose "Entire Screen"</li>
+                        <li>Click "Share"</li>
+                    </ol>
+                    
+                    <strong>Result:</strong>
+                    <p>Capture shows switching between Excel and QuickBooks</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 3: Web-Based Salesforce</h4>
+                    <strong>Scenario:</strong>
+                    <p>Document lead entry in Salesforce</p>
+                    
+                    <strong>Setup:</strong>
+                    <ol>
+                        <li>Click "Start Recording"</li>
+                        <li>Choose "Browser Tab"</li>
+                        <li>Select your Salesforce tab</li>
+                        <li>Click "Share"</li>
+                    </ol>
+                    
+                    <strong>Result:</strong>
+                    <p>Clean capture of just Salesforce, other tabs stay private</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Privacy Considerations -->
+            <div class="section">
+                <h2>🔒 Privacy Considerations</h2>
+
+                <div class="privacy-grid">
+                    <div class="privacy-box will-not">
+                        <h4>What Others WON'T See:</h4>
+                        <ul>
+                            <li>Other applications (when using "Application Window" mode)</li>
+                            <li>Other browser tabs (when using "Browser Tab" mode)</li>
+                            <li>Notifications from other apps</li>
+                            <li>Anything minimized or hidden</li>
+                        </ul>
+                    </div>
+
+                    <div class="privacy-box will">
+                        <h4>What Others WILL See:</h4>
+                        <ul>
+                            <li>The application/screen you selected</li>
+                            <li>Anything you type or click</li>
+                            <li>Pop-ups or dialogs that appear</li>
+                            <li>Content visible in the selected window</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="best-practice">
+                    <p>🔐 Use "Application Window" mode for sensitive work - it only captures the specific app you select!</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Technical Requirements -->
+            <div class="section">
+                <h2>⚙️ Technical Requirements</h2>
+
+                <div class="requirements">
+                    <h4>Browser Requirements:</h4>
+                    <ul>
+                        <li>Chrome 72+ (recommended)</li>
+                        <li>Edge 79+</li>
+                        <li>Firefox 66+</li>
+                        <li>Safari 13+ (macOS only)</li>
+                    </ul>
+                </div>
+
+                <div class="requirements">
+                    <h4>Operating System:</h4>
+                    <ul>
+                        <li>Windows 10/11</li>
+                        <li>macOS 10.15+</li>
+                        <li>Linux (most distributions)</li>
+                    </ul>
+                </div>
+
+                <div class="requirements">
+                    <h4>Permissions:</h4>
+                    <ul>
+                        <li>Screen recording permission (browser will ask)</li>
+                        <li>HTTPS connection (required for security)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- What You CANNOT Capture -->
+            <div class="section">
+                <h2>❌ What You CANNOT Capture</h2>
+
+                <h3>Browser Limitations:</h3>
+                <ul>
+                    <li>DRM-protected content (Netflix, etc.)</li>
+                    <li>Some full-screen games</li>
+                    <li>Certain security-protected applications</li>
+                </ul>
+
+                <h3>If Something Won't Capture:</h3>
+                <ol>
+                    <li>Try a different capture mode</li>
+                    <li>Use "Entire Screen" instead of "Application Window"</li>
+                    <li>Check if the app has screen capture restrictions</li>
+                    <li>Try a different browser</li>
+                </ol>
+            </div>
+
+            <hr>
+
+            <!-- Capture Tips -->
+            <div class="section">
+                <h2>🎯 Capture Tips</h2>
+
+                <div class="tips-grid">
+                    <div class="tip-category">
+                        <h4>For Desktop Applications (like QuickBooks):</h4>
+                        <ul>
+                            <li class="do">DO: Use "Application Window" mode</li>
+                            <li class="do">DO: Maximize the window for better screenshots</li>
+                            <li class="do">DO: Close unnecessary windows</li>
+                            <li class="dont">DON'T: Minimize the application during capture</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-category">
+                        <h4>For Web Applications:</h4>
+                        <ul>
+                            <li class="do">DO: Use "Browser Tab" for web-only workflows</li>
+                            <li class="do">DO: Zoom to comfortable reading size (Ctrl/Cmd + Plus)</li>
+                            <li class="do">DO: Hide bookmarks bar for cleaner screenshots</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-category">
+                        <h4>For Multi-Application Workflows:</h4>
+                        <ul>
+                            <li class="do">DO: Use "Entire Screen"</li>
+                            <li class="do">DO: Arrange windows before starting</li>
+                            <li class="do">DO: Close distracting applications</li>
+                            <li class="do">DO: Silence notifications</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Troubleshooting -->
+            <div class="section">
+                <h2>🆘 Troubleshooting</h2>
+
+                <div class="troubleshooting">
+                    <h4>"I don't see my application in the list"</h4>
+                    <ul>
+                        <li>Make sure the application is open (not minimized)</li>
+                        <li>Try selecting "Entire Screen" instead</li>
+                        <li>Restart your browser</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>"Screen sharing keeps stopping"</h4>
+                    <ul>
+                        <li>Don't minimize the captured window</li>
+                        <li>Don't switch to "Entire Screen" if capturing an app</li>
+                        <li>Check that the application allows screen capture</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>"Capture is black/blank"</h4>
+                    <ul>
+                        <li>Some applications block screen capture (security feature)</li>
+                        <li>Try "Entire Screen" mode</li>
+                        <li>Update your graphics drivers</li>
+                        <li>Try a different browser</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Best Practices -->
+            <div class="section">
+                <h2>✨ Best Practices</h2>
+
+                <ol>
+                    <li><strong>Test First:</strong> Do a quick test capture before documenting a long process</li>
+                    <li><strong>Clean Your Screen:</strong> Close unnecessary windows and notifications</li>
+                    <li><strong>Full Screen:</strong> Maximize applications for better screenshots</li>
+                    <li><strong>Privacy Mode:</strong> Use "Application Window" for sensitive data</li>
+                    <li><strong>Zoom Appropriately:</strong> Make text readable in screenshots (Ctrl/Cmd + Plus)</li>
+                </ol>
+            </div>
+
+            <div class="highlight-box">
+                <p>Remember: If you can see it on your screen, DocuCapture can record it! 📹</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

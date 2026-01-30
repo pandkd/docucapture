@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start Guide - DocuCapture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #1e40af;
+            font-size: 28px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #2c5282;
+            font-size: 22px;
+            margin: 25px 0 15px;
+        }
+
+        .section p, .section li {
+            color: #495057;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .steps-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2c5282;
+            padding: 25px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .steps-box h3 {
+            margin-top: 0;
+        }
+
+        .steps-box ul, .steps-box ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .steps-box li {
+            margin: 8px 0;
+        }
+
+        .workflow-box {
+            background: #e7f3ff;
+            border: 2px solid #2c5282;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        .workflow-box pre {
+            margin: 0;
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .workflow-step {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #2c5282;
+        }
+
+        .workflow-step strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .task-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 15px 0;
+        }
+
+        .task-card h3 {
+            color: #1e40af;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .task-card ol {
+            margin: 0;
+            padding-left: 25px;
+        }
+
+        .task-card li {
+            margin: 8px 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f7ff 100%);
+            border: 2px solid #2c5282;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box p {
+            color: #1e40af;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .troubleshooting {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .troubleshooting h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .troubleshooting ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .troubleshooting li {
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .resource-card {
+            background: #f8f9fa;
+            border-left: 4px solid #2c5282;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .resource-card h4 {
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .resource-card p {
+            color: #6c757d;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Quick Start Guide</h1>
+            <p>Get started with DocuCapture in 2 minutes!</p>
+        </div>
+
+        <div class="content">
+            <a href="index.html" class="back-button">← Back to Home</a>
+
+            <!-- For End Users -->
+            <div class="section">
+                <h2>⚡ For End Users</h2>
+
+                <div class="steps-box">
+                    <h3>1️⃣ Access DocuCapture</h3>
+                    <ul>
+                        <li>Open the link provided by your system administrator</li>
+                        <li>Or open <code>index.html</code> from your local files</li>
+                        <li>Bookmark it for easy access</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <h3>2️⃣ Start Creating Documentation</h3>
+                    <p><strong>Using the Capture Tool:</strong></p>
+                    <ol>
+                        <li>Click <strong>"Start Recording"</strong></li>
+                        <li>Select what to share (choose your application window)</li>
+                        <li>Grant permission when prompted</li>
+                        <li>Perform your task step-by-step</li>
+                        <li>Click <strong>"Capture Step"</strong> after each action</li>
+                        <li>Add descriptions for what you did</li>
+                        <li>Export when finished</li>
+                    </ol>
+                </div>
+
+                <div class="steps-box">
+                    <h3>3️⃣ Learn More</h3>
+                    <ul>
+                        <li>Click <strong>"Interactive Tutorial"</strong> for a guided walkthrough</li>
+                        <li>Check the <strong>User Guide</strong> for detailed instructions</li>
+                        <li>Submit <strong>Enhancement Requests</strong> to suggest improvements</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Usage Workflow -->
+            <div class="section">
+                <h2>💻 Usage Workflow</h2>
+
+                <div class="workflow-box">
+                    <pre>Capture Process → Export → Analyze → Optimize
+     |              |          |          |
+   Capture      Save JSON   Import    Get insights
+   screenshots    file      to tool   & suggestions</pre>
+                </div>
+
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <strong>Capture</strong>
+                        Record your process with screenshots
+                    </div>
+                    <div class="workflow-step">
+                        <strong>Redact</strong>
+                        Protect sensitive information
+                    </div>
+                    <div class="workflow-step">
+                        <strong>Export</strong>
+                        Save as HTML, Markdown, PDF, or JSON
+                    </div>
+                    <div class="workflow-step">
+                        <strong>Analyze</strong>
+                        Import JSON into Process Analyst for optimization
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Common Tasks -->
+            <div class="section">
+                <h2>🎯 Common Tasks</h2>
+
+                <div class="task-card">
+                    <h3>Create Training Documentation</h3>
+                    <ol>
+                        <li>Open Capture Tool</li>
+                        <li>Record the process</li>
+                        <li>Add clear descriptions</li>
+                        <li>Redact any sensitive data</li>
+                        <li>Export as HTML or PDF</li>
+                        <li>Share with trainees</li>
+                    </ol>
+                </div>
+
+                <div class="task-card">
+                    <h3>Get Process Optimization</h3>
+                    <ol>
+                        <li>Capture your process</li>
+                        <li>Export for Analysis (JSON format)</li>
+                        <li>Open Process Analyst tool</li>
+                        <li>Import the JSON file</li>
+                        <li>Click "Analyze Process"</li>
+                        <li>Review efficiency score and recommendations</li>
+                    </ol>
+                </div>
+
+                <div class="task-card">
+                    <h3>Redact Sensitive Information</h3>
+                    <ol>
+                        <li>After capturing, look for red alert banners</li>
+                        <li>Click "Redact Data" on any step</li>
+                        <li>Choose redaction style (Blur, Pixelate, or Black Box)</li>
+                        <li>Click and drag over sensitive areas</li>
+                        <li>Apply and save</li>
+                    </ol>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- No Installation Required -->
+            <div class="section">
+                <h2>⚙️ No Installation Required!</h2>
+                
+                <div class="highlight-box">
+                    <p>Everything runs in your web browser:</p>
+                </div>
+
+                <ul class="feature-list">
+                    <li>No software to install</li>
+                    <li>No plugins needed</li>
+                    <li>No configuration required</li>
+                    <li>Works on Windows, Mac, Linux</li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <!-- Troubleshooting -->
+            <div class="section">
+                <h2>🆘 Troubleshooting</h2>
+
+                <div class="troubleshooting">
+                    <h4>Screen capture not working?</h4>
+                    <ul>
+                        <li>Use Chrome 72+, Edge 79+, Firefox 66+, or Safari 13+</li>
+                        <li>Make sure you grant screen recording permission</li>
+                        <li>Try selecting "Application Window" instead of "Entire Screen"</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Redaction not saving?</h4>
+                    <ul>
+                        <li>Make sure you click "Apply & Save"</li>
+                        <li>Check that browser allows localStorage</li>
+                        <li>Try refreshing the page</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Can't export documentation?</h4>
+                    <ul>
+                        <li>Check browser allows file downloads</li>
+                        <li>Try a different export format</li>
+                        <li>Make sure you have at least one step captured</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Process Analyst not working?</h4>
+                    <ul>
+                        <li>Make sure <code>analyze.html</code> is running locally on your computer</li>
+                        <li>Verify you imported a valid JSON file</li>
+                        <li>Check that you have an internet connection (for analysis features)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Need Help -->
+            <div class="section">
+                <h2>📧 Need Help?</h2>
+
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <h4>Interactive Tutorial</h4>
+                        <p>Step-by-step guided tour</p>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4>User Guide</h4>
+                        <p>Complete documentation</p>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4>Enhancement Requests</h4>
+                        <p>Submit questions or feature ideas</p>
+                    </div>
+
+                    <div class="resource-card">
+                        <h4>Your Administrator</h4>
+                        <p>Contact for access or technical issues</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Learning Resources -->
+            <div class="section">
+                <h2>🎓 Learning Resources</h2>
+
+                <h3>Quick References</h3>
+                <ul>
+                    <li><strong>CAPTURE_CAPABILITIES</strong> - What you can capture</li>
+                    <li><strong>REDACTION_GUIDE</strong> - How to protect sensitive data</li>
+                    <li><strong>USER_GUIDE</strong> - Complete user manual</li>
+                </ul>
+
+                <h3>Best Practices</h3>
+                <ul>
+                    <li>Capture one action per step</li>
+                    <li>Write clear, concise descriptions</li>
+                    <li>Always redact sensitive information</li>
+                    <li>Review before sharing</li>
+                    <li>Use Process Analyst for optimization</li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <!-- Next Steps -->
+            <div class="section">
+                <h2>🎯 Next Steps</h2>
+
+                <ul class="feature-list">
+                    <li>Complete the Interactive Tutorial</li>
+                    <li>Bookmark the Capture Tool</li>
+                    <li>Download Process Analyst tool (if needed)</li>
+                    <li>Start documenting your first process!</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 40px; text-align: center;">
+                <p style="font-size: 20px;">Happy documenting! 🎉</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

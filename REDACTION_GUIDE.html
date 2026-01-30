@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Redaction Guide - DocuCapture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            color: #1e40af;
+            font-size: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #2c5282;
+            font-size: 22px;
+            margin: 25px 0 15px;
+        }
+
+        .section p, .section li {
+            color: #495057;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .intro-box {
+            background: #e7f3ff;
+            border: 2px solid #2c5282;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .intro-box p {
+            color: #1e40af;
+            margin: 0;
+            line-height: 1.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .feature-card h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-card li {
+            padding: 5px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .feature-card li::before {
+            content: "•";
+            color: #2c5282;
+            font-weight: bold;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .method-card {
+            background: #f8f9fa;
+            border-left: 4px solid #2c5282;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .method-card h4 {
+            color: #1e40af;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .method-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .method-card li {
+            padding: 5px 0;
+        }
+
+        .method-card .best-for {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .method-card .best-for strong {
+            color: #1e40af;
+        }
+
+        .steps-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2c5282;
+            padding: 25px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .steps-box h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .steps-box ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .steps-box li {
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #2c5282;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .best-practices {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .best-practices h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .best-practices ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .best-practices li {
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        .security-note {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .security-note h4 {
+            color: #721c24;
+            margin-bottom: 15px;
+        }
+
+        .security-note p, .security-note li {
+            color: #721c24;
+        }
+
+        .security-note ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .detected-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .detected-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detected-box {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .detected-box.yes {
+            border-color: #27ae60;
+            background: #f0f9f4;
+        }
+
+        .detected-box.no {
+            border-color: #ffc107;
+            background: #fffbf0;
+        }
+
+        .detected-box h4 {
+            margin-bottom: 15px;
+        }
+
+        .detected-box.yes h4 {
+            color: #27ae60;
+        }
+
+        .detected-box.no h4 {
+            color: #856404;
+        }
+
+        .detected-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detected-box li {
+            padding: 5px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .detected-box.yes li::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .detected-box.no li::before {
+            content: "⚠";
+            color: #ffc107;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            border: 2px solid #2c5282;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .example-box h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .example-box strong {
+            color: #2c5282;
+            display: block;
+            margin: 15px 0 8px;
+        }
+
+        .example-box ul, .example-box ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .faq-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .faq-item strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .faq-item p {
+            color: #495057;
+            margin: 0;
+        }
+
+        .troubleshooting {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .troubleshooting h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .troubleshooting ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .troubleshooting li {
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        .compliance {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .compliance h4 {
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+
+        .compliance ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .highlight-box p {
+            color: #721c24;
+            font-weight: 600;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .features-grid, .method-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Data Redaction Guide</h1>
+            <p>Protect sensitive information in your documentation</p>
+        </div>
+
+        <div class="content">
+            <a href="index.html" class="back-button">← Back to Home</a>
+
+            <!-- Overview -->
+            <div class="section">
+                <h2>Overview</h2>
+                <div class="intro-box">
+                    <p>DocuCapture includes intelligent redaction tools to protect sensitive information in your documentation. The system automatically detects potential sensitive data and provides powerful redaction tools.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Key Features -->
+            <div class="section">
+                <h2>🎯 Key Features</h2>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>Automatic Detection</h4>
+                        <p>The system automatically scans for:</p>
+                        <ul>
+                            <li>Password fields</li>
+                            <li>Email addresses</li>
+                            <li>Account numbers</li>
+                            <li>Credit card patterns</li>
+                            <li>Social Security numbers</li>
+                            <li>API keys and tokens</li>
+                            <li>Phone numbers</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>Visual Alerts</h4>
+                        <p>When sensitive data is detected:</p>
+                        <ul>
+                            <li>Red border highlights the step</li>
+                            <li>Alert banner shows detected items</li>
+                            <li>Status bar displays warning</li>
+                            <li>"Redact Data" button displayed</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Three Redaction Methods</h3>
+
+                <div class="method-grid">
+                    <div class="method-card">
+                        <h4>1. Blur (Recommended)</h4>
+                        <ul>
+                            <li>Applies gaussian blur effect</li>
+                            <li>Makes text unreadable</li>
+                            <li>Professional appearance</li>
+                        </ul>
+                        <div class="best-for">
+                            <strong>Best for:</strong> Most use cases
+                        </div>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>2. Pixelate</h4>
+                        <ul>
+                            <li>Creates mosaic/pixel effect</li>
+                            <li>Strong visual indicator</li>
+                            <li>Modern look</li>
+                        </ul>
+                        <div class="best-for">
+                            <strong>Best for:</strong> Creative documentation
+                        </div>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>3. Black Box</h4>
+                        <ul>
+                            <li>Solid black rectangle</li>
+                            <li>Complete coverage</li>
+                            <li>Maximum privacy</li>
+                        </ul>
+                        <div class="best-for">
+                            <strong>Best for:</strong> Highly sensitive data
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- How to Use -->
+            <div class="section">
+                <h2>📋 How to Use</h2>
+
+                <div class="steps-box">
+                    <h4>Automatic Detection (Recommended Workflow)</h4>
+                    <ol>
+                        <li><strong>Capture Your Screenshot</strong> - Click "Capture Step" as usual, system automatically scans</li>
+                        <li><strong>Review Detection Alert</strong> - See red border, alert banner, and warning if sensitive data found</li>
+                        <li><strong>Open Redaction Tool</strong> - Click "Redact Data" button</li>
+                        <li><strong>Apply Redactions</strong> - Choose style, click and drag on sensitive areas, click "Apply & Save"</li>
+                    </ol>
+                </div>
+
+                <div class="steps-box">
+                    <h4>Manual Redaction (For Any Screenshot)</h4>
+                    <ol>
+                        <li><strong>Open Redaction Tool</strong> - Click "Redact Data" on any step</li>
+                        <li><strong>Select Redaction Style</strong> - Choose Blur, Pixelate, or Black Box</li>
+                        <li><strong>Draw Redaction Areas</strong> - Click and drag to select areas</li>
+                        <li><strong>Refine as Needed</strong> - Use "Undo Last" or "Clear All" buttons</li>
+                        <li><strong>Save Changes</strong> - Click "Apply & Save" to finalize</li>
+                    </ol>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Sensitive Data Patterns -->
+            <div class="section">
+                <h2>🛡️ Sensitive Data Patterns Detected</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>What It Detects</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Passwords</strong></td>
+                            <td>Password fields, labels</td>
+                            <td>"Password:", "pwd:", "secret"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Credit Cards</strong></td>
+                            <td>16-digit card numbers</td>
+                            <td>4532-1234-5678-9010</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SSN</strong></td>
+                            <td>Social Security numbers</td>
+                            <td>123-45-6789</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email</strong></td>
+                            <td>Email addresses</td>
+                            <td>user@company.com</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phone</strong></td>
+                            <td>Phone numbers</td>
+                            <td>(555) 123-4567</td>
+                        </tr>
+                        <tr>
+                            <td><strong>API Keys</strong></td>
+                            <td>API keys, tokens</td>
+                            <td>"api_key", "bearer", "token"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Accounts</strong></td>
+                            <td>Account numbers</td>
+                            <td>"Account #12345"</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr>
+
+            <!-- Best Practices -->
+            <div class="section">
+                <h2>💡 Best Practices</h2>
+
+                <div class="best-practices">
+                    <h4>Always Redact:</h4>
+                    <ul>
+                        <li>Passwords and login credentials</li>
+                        <li>Credit card numbers</li>
+                        <li>Social Security numbers</li>
+                        <li>Bank account numbers</li>
+                        <li>API keys and tokens</li>
+                        <li>Employee ID numbers</li>
+                        <li>Personal addresses</li>
+                        <li>Confidential business data</li>
+                    </ul>
+                </div>
+
+                <div class="best-practices">
+                    <h4>Consider Redacting:</h4>
+                    <ul>
+                        <li>Email addresses (if public documentation)</li>
+                        <li>Phone numbers</li>
+                        <li>Internal IP addresses</li>
+                        <li>Customer names (depending on context)</li>
+                    </ul>
+                </div>
+
+                <h3>Redaction Tips</h3>
+
+                <div class="steps-box">
+                    <h4>1. Review Before Sharing</h4>
+                    <ul>
+                        <li>Always review all screenshots before exporting</li>
+                        <li>Check for data in unexpected places (URLs, error messages)</li>
+                        <li>Look for reflections in shiny surfaces</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <h4>2. Choose Appropriate Method</h4>
+                    <ul>
+                        <li><strong>Blur:</strong> General use, professional look</li>
+                        <li><strong>Pixelate:</strong> When you want to be obvious about redaction</li>
+                        <li><strong>Black Box:</strong> Maximum security, complete coverage</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <h4>3. Be Thorough</h4>
+                    <ul>
+                        <li>Redact data in multiple places if it appears more than once</li>
+                        <li>Check status bars, title bars, and URL fields</li>
+                        <li>Review system notifications and pop-ups</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <h4>4. Test Your Redactions</h4>
+                    <ul>
+                        <li>Zoom in to ensure text is unreadable</li>
+                        <li>Check that important context remains visible</li>
+                        <li>Verify redaction quality before exporting</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Important Security Notes -->
+            <div class="section">
+                <h2>🚨 Important Security Notes</h2>
+
+                <div class="detected-grid">
+                    <div class="detected-box yes">
+                        <h4>✅ Currently Detected:</h4>
+                        <ul>
+                            <li>Common password field patterns</li>
+                            <li>Standard formatted data (SSN, credit cards)</li>
+                            <li>Common sensitive keywords</li>
+                        </ul>
+                    </div>
+
+                    <div class="detected-box no">
+                        <h4>⚠ May Not Detect:</h4>
+                        <ul>
+                            <li>Custom formatted data</li>
+                            <li>Sensitive data without standard patterns</li>
+                            <li>Data in images within screenshots</li>
+                            <li>Handwritten information</li>
+                            <li>Encoded or encrypted data</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="security-note">
+                    <h4>Important Detection Limitations</h4>
+                    <p><strong>Automatic detection is a helper tool, not a guarantee. Always manually review all screenshots before sharing.</strong></p>
+                    <p style="margin-top: 15px;">The automatic detection system:</p>
+                    <ul>
+                        <li>Uses pattern matching (not OCR in this version)</li>
+                        <li>May have false positives (flagging non-sensitive data)</li>
+                        <li>May have false negatives (missing some sensitive data)</li>
+                        <li>Works best with standard formats</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Best Practice:</strong> Treat automatic detection as a reminder to review, not a complete solution.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Workflow Examples -->
+            <div class="section">
+                <h2>🔄 Workflow Examples</h2>
+
+                <div class="example-box">
+                    <h4>Example 1: Banking Application Training</h4>
+                    <strong>Scenario:</strong>
+                    <p>Creating guide for online banking login</p>
+                    
+                    <strong>Steps:</strong>
+                    <ol>
+                        <li>Capture login screen</li>
+                        <li>System detects: "Password field"</li>
+                        <li>Open redaction tool</li>
+                        <li>Use <strong>Black Box</strong> to redact password field</li>
+                        <li>Use <strong>Blur</strong> to redact account number</li>
+                        <li>Apply and continue</li>
+                    </ol>
+                    
+                    <strong>Result:</strong>
+                    <p>Safe training documentation without credentials</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 2: Customer Support Documentation</h4>
+                    <strong>Scenario:</strong>
+                    <p>Documenting how to look up customer accounts</p>
+                    
+                    <strong>Steps:</strong>
+                    <ol>
+                        <li>Capture customer record screen</li>
+                        <li>System detects: Email, phone number</li>
+                        <li>Open redaction tool</li>
+                        <li>Use <strong>Pixelate</strong> for customer email</li>
+                        <li>Use <strong>Pixelate</strong> for customer phone</li>
+                        <li>Leave customer name visible (if appropriate)</li>
+                        <li>Apply and continue</li>
+                    </ol>
+                    
+                    <strong>Result:</strong>
+                    <p>Clear documentation that protects PII</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 3: Software Configuration</h4>
+                    <strong>Scenario:</strong>
+                    <p>Documenting API setup process</p>
+                    
+                    <strong>Steps:</strong>
+                    <ol>
+                        <li>Capture API configuration screen</li>
+                        <li>System detects: "API key"</li>
+                        <li>Open redaction tool</li>
+                        <li>Use <strong>Black Box</strong> for API key</li>
+                        <li>Use <strong>Black Box</strong> for secret key</li>
+                        <li>Leave field labels visible for reference</li>
+                        <li>Apply and continue</li>
+                    </ol>
+                    
+                    <strong>Result:</strong>
+                    <p>Useful guide without exposing credentials</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Export Behavior -->
+            <div class="section">
+                <h2>📤 Export Behavior</h2>
+
+                <h3>What Happens to Redacted Images</h3>
+                <ul>
+                    <li><strong>HTML Export:</strong> Redacted images embedded as base64 (redactions preserved)</li>
+                    <li><strong>Markdown Export:</strong> Redacted images embedded as base64 (redactions preserved)</li>
+                    <li><strong>PDF Export:</strong> Redacted images printed (redactions preserved)</li>
+                    <li><strong>JSON Export:</strong> Redacted images included for analyst review</li>
+                </ul>
+
+                <div class="security-note">
+                    <h4>Important</h4>
+                    <p>Once redacted and saved, the original unredacted image is replaced. Keep backup copies if you need original screenshots.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- FAQ -->
+            <div class="section">
+                <h2>❓ FAQ</h2>
+
+                <div class="faq-item">
+                    <strong>Q: Can I undo redactions after saving?</strong>
+                    <p>A: No, once you click "Apply & Save", redactions are permanent. Use "Undo Last" or "Clear All" before saving.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Does this work for uploaded images?</strong>
+                    <p>A: Yes! Any step with a screenshot can be redacted, whether captured or uploaded.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Will redacted data appear in the analysis tool?</strong>
+                    <p>A: Only if you export after redacting. Redacted images are included in exports.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: How accurate is automatic detection?</strong>
+                    <p>A: It's a helpful reminder but not perfect. Always manually review all screenshots.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Can I redact non-sensitive data?</strong>
+                    <p>A: Yes! You can redact anything - the tool doesn't limit what you can redact.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: What if I forget to redact something?</strong>
+                    <p>A: You can always go back, click "Redact Data" on any step, add more redactions, and save again.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Does it work on mobile?</strong>
+                    <p>A: The redaction tool works best on desktop/laptop with a mouse. Touch/mobile support is limited.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Troubleshooting -->
+            <div class="section">
+                <h2>🆘 Troubleshooting</h2>
+
+                <div class="troubleshooting">
+                    <h4>Alert shows but I don't see sensitive data</h4>
+                    <ul>
+                        <li>Detection may have false positive</li>
+                        <li>Review anyway - data might be there</li>
+                        <li>You can ignore alert if no sensitive data present</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Sensitive data not detected</h4>
+                    <ul>
+                        <li>Detection isn't perfect</li>
+                        <li>Manually review all screenshots</li>
+                        <li>Use manual redaction tool</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Redaction looks blurry/poor quality</h4>
+                    <ul>
+                        <li>This is intentional - data should be unreadable</li>
+                        <li>Try different redaction method</li>
+                        <li>Increase redaction area size</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Can't click and drag</h4>
+                    <ul>
+                        <li>Make sure you're in redaction modal</li>
+                        <li>Check that you've selected a redaction style</li>
+                        <li>Try refreshing and opening tool again</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Privacy Compliance -->
+            <div class="section">
+                <h2>🔐 Privacy Compliance</h2>
+
+                <div class="compliance">
+                    <h4>GDPR Considerations</h4>
+                    <ul>
+                        <li>Redact personal data before sharing</li>
+                        <li>Consider right to be forgotten</li>
+                        <li>Document what data was redacted</li>
+                    </ul>
+                </div>
+
+                <div class="compliance">
+                    <h4>HIPAA Considerations</h4>
+                    <ul>
+                        <li>Redact all PHI (Protected Health Information)</li>
+                        <li>Use strongest redaction (Black Box) for medical data</li>
+                        <li>Maintain audit trail of redactions</li>
+                    </ul>
+                </div>
+
+                <div class="compliance">
+                    <h4>PCI-DSS Considerations</h4>
+                    <ul>
+                        <li>Never capture full credit card numbers</li>
+                        <li>Redact even partial card numbers</li>
+                        <li>Use Black Box for payment data</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p>Security is everyone's responsibility. Always review before sharing! 🔒</p>
+            </div>
+
+            <p style="text-align: center; color: #6c757d; margin-top: 30px;">
+                <em>For technical support or questions about the redaction feature, refer to the main documentation or contact your system administrator.</em>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

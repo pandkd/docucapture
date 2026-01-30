@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - DocuCapture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            color: #1e40af;
+            font-size: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #2c5282;
+            font-size: 22px;
+            margin: 25px 0 15px;
+        }
+
+        .section p, .section li {
+            color: #495057;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .steps-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2c5282;
+            padding: 25px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .steps-box ol, .steps-box ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .steps-box li {
+            margin: 10px 0;
+        }
+
+        .steps-box strong {
+            color: #1e40af;
+        }
+
+        .highlight-box {
+            background: #e7f3ff;
+            border: 2px solid #2c5282;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .highlight-box p {
+            color: #1e40af;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%);
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .tip-box strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .tip-box ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .tip-box li {
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        .pro-tips {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .pro-tips h3 {
+            margin-top: 0;
+        }
+
+        .pro-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pro-tips li {
+            padding: 8px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .pro-tips li.good::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .pro-tips li.bad::before {
+            content: "✗";
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .export-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .export-card h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .export-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .export-card ul li {
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .export-card ul li.pro::before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .export-card ul li.con::before {
+            content: "✗ ";
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .export-card .use-when {
+            background: #e7f3ff;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .export-card .use-when strong {
+            color: #1e40af;
+        }
+
+        .faq-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .faq-item strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .faq-item p {
+            color: #495057;
+            margin: 0;
+        }
+
+        .troubleshooting {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .troubleshooting h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .troubleshooting ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .troubleshooting li {
+            color: #856404;
+            margin: 5px 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .export-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 User Guide</h1>
+            <p>Complete guide for using DocuCapture</p>
+        </div>
+
+        <div class="content">
+            <a href="index.html" class="back-button">← Back to Home</a>
+
+            <!-- For Process Documenters -->
+            <div class="section">
+                <h2>For Process Documenters</h2>
+
+                <h3>How to Capture a Process</h3>
+
+                <div class="steps-box">
+                    <strong>1. Open the Capture Tool</strong>
+                    <ul>
+                        <li>Visit the website URL provided to you, OR</li>
+                        <li>Double-click <code>capture.html</code> if you downloaded it</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>2. Start Recording</strong>
+                    <ul>
+                        <li>Click <strong>"Start Recording"</strong></li>
+                        <li>A dialog will appear asking what to share</li>
+                        <li><strong>Choose what to capture:</strong>
+                            <ul>
+                                <li><strong>Application Window</strong> - Select QuickBooks, Excel, or any desktop app (recommended)</li>
+                                <li><strong>Entire Screen</strong> - Captures everything on your monitor</li>
+                                <li><strong>Browser Tab</strong> - For web applications only</li>
+                            </ul>
+                        </li>
+                        <li>Click <strong>"Share"</strong></li>
+                    </ul>
+
+                    <div class="tip-box">
+                        <strong>💡 Works with ANY software:</strong>
+                        <ul>
+                            <li>Desktop applications (QuickBooks, SAP, Excel, Photoshop, AutoCAD, etc.)</li>
+                            <li>Web applications (Salesforce, HubSpot, Google Workspace, etc.)</li>
+                            <li>Multiple applications (switch between apps during recording)</li>
+                            <li><strong>See CAPTURE_CAPABILITIES for full details</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="steps-box">
+                    <strong>3. Capture Your Steps</strong>
+                    <ul>
+                        <li>Perform your task normally</li>
+                        <li>After each important action, click <strong>"Capture Step"</strong></li>
+                        <li>The tool will screenshot what you just did</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>4. Add Descriptions</strong>
+                    <ul>
+                        <li>Type a description for each step</li>
+                        <li>Explain what you did and why</li>
+                        <li>Be specific (e.g., "Click the blue 'Submit' button in the top right")</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>5. Organize Your Steps</strong>
+                    <ul>
+                        <li>Use ⬆️ and ⬇️ buttons to reorder steps</li>
+                        <li>Delete unnecessary steps with delete button</li>
+                        <li>Add manual steps with <strong>"Add Manual Step"</strong></li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>6. Export Your Work</strong>
+                    
+                    <p style="margin: 15px 0;"><strong>Option A: For Process Analysis</strong></p>
+                    <ul>
+                        <li>Click <strong>"Export for Process Analysis"</strong></li>
+                        <li>Save the <code>.json</code> file</li>
+                        <li>Send it to your analyst/manager</li>
+                    </ul>
+                    
+                    <p style="margin: 15px 0;"><strong>Option B: For Immediate Sharing</strong></p>
+                    <ul>
+                        <li>Click <strong>"Export as HTML"</strong> for a webpage</li>
+                        <li>Click <strong>"Export as Markdown"</strong> for documentation</li>
+                        <li>Click <strong>"Print / Save as PDF"</strong> for printing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- For Analysts -->
+            <div class="section">
+                <h2>For Analysts (Analysis Features)</h2>
+
+                <h3>How to Analyze a Process</h3>
+
+                <div class="steps-box">
+                    <strong>1. Get the Process File</strong>
+                    <p>Receive the <code>.json</code> file from the documenter</p>
+                </div>
+
+                <div class="steps-box">
+                    <strong>2. Open the Analysis Tool</strong>
+                    <ul>
+                        <li>Download <code>analyze.html</code> to your computer</li>
+                        <li>Double-click to open in your browser</li>
+                        <li>(Keep this file local - don't host it online)</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>3. Import the Process</strong>
+                    <ul>
+                        <li>Click <strong>"Import Process"</strong></li>
+                        <li>Select the <code>.json</code> file</li>
+                        <li>All steps will load automatically</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>4. Run Process Analysis</strong>
+                    <ul>
+                        <li>Click <strong>"Analyze Process"</strong></li>
+                        <li>Wait 10-30 seconds</li>
+                        <li>System will analyze the entire workflow</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>5. Review Analysis Insights</strong>
+                    <p>The analysis panel shows:</p>
+                    <ul>
+                        <li><strong>Efficiency Score</strong> (0-100) - How optimized the process is</li>
+                        <li><strong>Key Inefficiencies</strong> - Problems in the workflow</li>
+                        <li><strong>Optimization Suggestions</strong> - How to improve</li>
+                        <li><strong>Automation Opportunities</strong> - Steps that could be automated</li>
+                        <li><strong>Step Notes</strong> - Specific feedback on each step</li>
+                    </ul>
+                </div>
+
+                <div class="steps-box">
+                    <strong>6. Export with Insights</strong>
+                    <ul>
+                        <li>Click <strong>"Export as HTML"</strong> - Includes analysis insights</li>
+                        <li>Click <strong>"Export as Markdown"</strong> - For documentation</li>
+                        <li>All exports include the analysis insights</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Pro Tips -->
+            <div class="section">
+                <h2>💡 Pro Tips</h2>
+
+                <div class="pro-tips">
+                    <h3>For Better Captures</h3>
+                    <ul>
+                        <li class="good">Capture each distinct action as a separate step</li>
+                        <li class="good">Write clear descriptions (imagine you're teaching someone new)</li>
+                        <li class="good">Include screenshots of important screens</li>
+                        <li class="good">Use the title field to name your guide clearly</li>
+                        <li class="bad">Don't capture too many steps at once (break into smaller guides)</li>
+                    </ul>
+                </div>
+
+                <div class="pro-tips">
+                    <h3>For Better Analysis</h3>
+                    <ul>
+                        <li class="good">Make sure descriptions are detailed before exporting</li>
+                        <li class="good">Review analysis suggestions carefully - they're recommendations, not rules</li>
+                        <li class="good">Combine analysis insights with your domain knowledge</li>
+                        <li class="good">Look for patterns across multiple process analyses</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Customization -->
+            <div class="section">
+                <h2>🎨 Customization</h2>
+
+                <h3>Change Guide Title</h3>
+                <ul>
+                    <li>Click the title field at the top</li>
+                    <li>Type your new title</li>
+                    <li>Examples: "How to Create a New Customer Account", "Onboarding Checklist"</li>
+                </ul>
+
+                <h3>Add Images Manually</h3>
+                <ul>
+                    <li>Click <strong>"Upload Image"</strong> on any step</li>
+                    <li>Select an image from your computer</li>
+                    <li>Works great for adding diagrams or additional screenshots</li>
+                </ul>
+
+                <h3>Reorder Steps</h3>
+                <ul>
+                    <li>Use ⬆️ to move a step up</li>
+                    <li>Use ⬇️ to move a step down</li>
+                    <li>Keep reorganizing until the flow makes sense</li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <!-- Export Formats -->
+            <div class="section">
+                <h2>📤 Export Formats Explained</h2>
+
+                <div class="export-grid">
+                    <div class="export-card">
+                        <h4>JSON (For Process Analysis)</h4>
+                        <ul>
+                            <li class="pro">Small file size</li>
+                            <li class="pro">Includes all data</li>
+                            <li class="pro">Can be imported back</li>
+                            <li class="con">Not human-readable</li>
+                        </ul>
+                        <div class="use-when">
+                            <strong>Use when:</strong> Sending to someone for process analysis
+                        </div>
+                    </div>
+
+                    <div class="export-card">
+                        <h4>HTML (Webpage)</h4>
+                        <ul>
+                            <li class="pro">Opens in any browser</li>
+                            <li class="pro">Looks professional</li>
+                            <li class="pro">Can be shared easily</li>
+                            <li class="pro">Includes images</li>
+                        </ul>
+                        <div class="use-when">
+                            <strong>Use when:</strong> Sharing final documentation
+                        </div>
+                    </div>
+
+                    <div class="export-card">
+                        <h4>Markdown (.md)</h4>
+                        <ul>
+                            <li class="pro">Works with documentation systems</li>
+                            <li class="pro">Easy to edit</li>
+                            <li class="pro">Version control friendly</li>
+                            <li class="pro">Works in wikis, Notion, etc.</li>
+                        </ul>
+                        <div class="use-when">
+                            <strong>Use when:</strong> Creating technical documentation
+                        </div>
+                    </div>
+
+                    <div class="export-card">
+                        <h4>PDF (Print)</h4>
+                        <ul>
+                            <li class="pro">Universal format</li>
+                            <li class="pro">Can't be edited</li>
+                            <li class="pro">Professional appearance</li>
+                            <li class="pro">Easy to email</li>
+                        </ul>
+                        <div class="use-when">
+                            <strong>Use when:</strong> Creating formal documentation or printing
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Privacy & Data -->
+            <div class="section">
+                <h2>🔒 Privacy & Data</h2>
+
+                <h3>What Gets Saved?</h3>
+                <ul>
+                    <li>Screenshots you capture</li>
+                    <li>Text descriptions you write</li>
+                    <li>Step order and organization</li>
+                </ul>
+
+                <h3>Where Is Data Stored?</h3>
+                <ul>
+                    <li><strong>In your browser only</strong> while you're working</li>
+                    <li><strong>In export files</strong> when you export</li>
+                    <li><strong>Never</strong> sent to any server (except process analysis text)</li>
+                </ul>
+
+                <h3>Process Analysis Privacy</h3>
+                <ul>
+                    <li>Only step <strong>descriptions</strong> are sent to the analysis engine</li>
+                    <li>Screenshots are <strong>NOT</strong> sent unless you choose to export them</li>
+                    <li>Analysis happens in real-time and isn't stored</li>
+                </ul>
+            </div>
+
+            <hr>
+
+            <!-- FAQ -->
+            <div class="section">
+                <h2>❓ FAQ</h2>
+
+                <div class="faq-item">
+                    <strong>Q: Can I capture desktop applications like QuickBooks, Excel, or SAP?</strong>
+                    <p>A: Yes! When you start recording, choose "Application Window" and select any desktop app. This works with all installed software, not just web browsers.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Do I need to install anything?</strong>
+                    <p>A: No! Just open the HTML file in a modern web browser.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Does it work offline?</strong>
+                    <p>A: Capture tool works offline, process analysis requires internet.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Can I edit steps after capturing?</strong>
+                    <p>A: Yes! Edit descriptions, add images, reorder, or delete steps anytime.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: How many steps can I capture?</strong>
+                    <p>A: Unlimited, but we recommend keeping guides under 20 steps for clarity.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Can I pause recording?</strong>
+                    <p>A: Yes, just don't click "Capture Step" until you're ready. Or stop and resume later.</p>
+                </div>
+
+                <div class="faq-item">
+                    <strong>Q: Does it work on mobile?</strong>
+                    <p>A: Screen recording works best on desktop. You can view/edit on mobile.</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Common Issues -->
+            <div class="section">
+                <h2>🆘 Common Issues</h2>
+
+                <div class="troubleshooting">
+                    <h4>"Screen sharing not working"</h4>
+                    <ul>
+                        <li>Grant permission when prompted</li>
+                        <li>Use Chrome, Firefox, or Edge</li>
+                        <li>Make sure the site uses https://</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>"Can't import JSON file"</h4>
+                    <ul>
+                        <li>Make sure file ends in <code>.json</code></li>
+                        <li>File must be exported from capture tool</li>
+                        <li>Try re-exporting</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>"Process analysis failed"</h4>
+                    <ul>
+                        <li>Make sure you have internet connection</li>
+                        <li>Try refreshing the page</li>
+                        <li>Check that you're using analyze.html locally</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 40px; text-align: center;">
+                <p><strong>Need more help?</strong> Check the README or contact your system administrator.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
