@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhancement Request - DocuCapture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2c5282;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .info-box h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #495057;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .form-group .required {
+            color: #dc3545;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group .help-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            border-color: #2c5282;
+            background: #f8f9fa;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-top: 3px;
+            cursor: pointer;
+        }
+
+        .radio-option-content {
+            flex: 1;
+        }
+
+        .radio-option-content strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .radio-option-content p {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-option label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: #2c5282;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a365d;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #27ae60;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 40px;
+        }
+
+        .success-message h2 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #155724;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #2c5282;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Enhancement Request</h1>
+            <p>Help us improve DocuCapture with your ideas and suggestions</p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <h3>We Value Your Feedback!</h3>
+                <p>Your suggestions help us make DocuCapture better for everyone. Whether it's a new feature, improvement to existing functionality, or a bug fix, we want to hear from you.</p>
+                <p style="margin-top: 10px;"><strong>All submissions are reviewed and considered for future releases.</strong></p>
+            </div>
+
+            <form id="enhancementForm">
+                <!-- Contact Information -->
+                <div class="form-group">
+                    <label for="name">Your Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="john.doe@company.com">
+                    <div class="help-text">We'll use this to follow up on your request</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="organization">Organization (Optional)</label>
+                    <input type="text" id="organization" name="organization" placeholder="Your company name">
+                </div>
+
+                <!-- Request Type -->
+                <div class="form-group">
+                    <label>Request Type <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="requestType" value="new-feature" required>
+                            <div class="radio-option-content">
+                                <strong>New Feature</strong>
+                                <p>Suggest a completely new capability or functionality</p>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="requestType" value="improvement" required>
+                            <div class="radio-option-content">
+                                <strong>Improvement</strong>
+                                <p>Enhance an existing feature to work better</p>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="requestType" value="bug-fix" required>
+                            <div class="radio-option-content">
+                                <strong>Bug Fix</strong>
+                                <p>Report something that isn't working correctly</p>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="requestType" value="usability" required>
+                            <div class="radio-option-content">
+                                <strong>Usability</strong>
+                                <p>Make the interface easier or more intuitive to use</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Enhancement Details -->
+                <div class="form-group">
+                    <label for="title">Request Title <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" required placeholder="Brief summary of your request">
+                    <div class="help-text">Example: "Add ability to export to PowerPoint" or "Improve redaction tool responsiveness"</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Detailed Description <span class="required">*</span></label>
+                    <textarea id="description" name="description" required placeholder="Describe your enhancement request in detail..."></textarea>
+                    <div class="help-text">Please be as specific as possible. Include what you want to accomplish and why it would be valuable.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="useCase">Use Case / Business Need</label>
+                    <textarea id="useCase" name="useCase" placeholder="Describe how you would use this feature and what problem it solves..."></textarea>
+                    <div class="help-text">Help us understand the context and business value</div>
+                </div>
+
+                <!-- Priority & Impact -->
+                <div class="form-group">
+                    <label for="priority">Priority Level</label>
+                    <select id="priority" name="priority">
+                        <option value="">Select priority...</option>
+                        <option value="low">Low - Nice to have</option>
+                        <option value="medium">Medium - Would improve workflow</option>
+                        <option value="high">High - Important for our use case</option>
+                        <option value="critical">Critical - Blocking our adoption</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Affected Areas (Check all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="area-capture" name="areas" value="capture">
+                            <label for="area-capture">Capture Tool</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="area-redaction" name="areas" value="redaction">
+                            <label for="area-redaction">Redaction Features</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="area-analyst" name="areas" value="analyst">
+                            <label for="area-analyst">Process Analyst</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="area-export" name="areas" value="export">
+                            <label for="area-export">Export Options</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="area-ui" name="areas" value="ui">
+                            <label for="area-ui">User Interface</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="area-docs" name="areas" value="docs">
+                            <label for="area-docs">Documentation</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="area-other" name="areas" value="other">
+                            <label for="area-other">Other</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="workaround">Current Workaround (if any)</label>
+                    <textarea id="workaround" name="workaround" placeholder="How are you currently handling this situation?"></textarea>
+                    <div class="help-text">Optional: Let us know if you've found a temporary solution</div>
+                </div>
+
+                <!-- Additional Information -->
+                <div class="form-group">
+                    <label for="additionalInfo">Additional Information</label>
+                    <textarea id="additionalInfo" name="additionalInfo" placeholder="Any other details, links, or context..."></textarea>
+                    <div class="help-text">Screenshots, examples, or links to similar features in other tools</div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </div>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✓</div>
+                <h2>Thank You!</h2>
+                <p>Your enhancement request has been submitted successfully.</p>
+                <p style="margin-top: 10px;">An email has been opened in your email client with your request details. Please send it to complete your submission.</p>
+                <p style="margin-top: 15px;"><strong>Reference ID: <span id="referenceId"></span></strong></p>
+                <p style="margin-top: 10px; font-size: 14px; color: #6c757d;">If the email didn't open automatically, please copy your reference ID and send it to your administrator.</p>
+                <div class="button-group" style="max-width: 400px; margin: 30px auto 0;">
+                    <button class="btn btn-primary" onclick="window.location.href='index.html'">Back to Home</button>
+                    <button class="btn btn-secondary" onclick="submitAnother()">Submit Another</button>
+                </div>
+            </div>
+
+            <div class="back-link">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('enhancementForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                organization: document.getElementById('organization').value,
+                requestType: document.querySelector('input[name="requestType"]:checked').value,
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                useCase: document.getElementById('useCase').value,
+                priority: document.getElementById('priority').value,
+                areas: Array.from(document.querySelectorAll('input[name="areas"]:checked')).map(cb => cb.value),
+                workaround: document.getElementById('workaround').value,
+                additionalInfo: document.getElementById('additionalInfo').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Generate reference ID
+            const referenceId = 'ER-' + Date.now().toString().slice(-8);
+            
+            // Store in localStorage
+            let requests = JSON.parse(localStorage.getItem('enhancementRequests') || '[]');
+            formData.referenceId = referenceId;
+            requests.push(formData);
+            localStorage.setItem('enhancementRequests', JSON.stringify(requests));
+
+            // Create email body
+            const emailSubject = `DocuCapture Enhancement Request: ${formData.title} [${referenceId}]`;
+            const emailBody = `
+DOCUCAPTURE ENHANCEMENT REQUEST
+Reference ID: ${referenceId}
+Submitted: ${new Date(formData.timestamp).toLocaleString()}
+
+═══════════════════════════════════════
+
+CONTACT INFORMATION
+Name: ${formData.name}
+Email: ${formData.email}
+Organization: ${formData.organization || 'N/A'}
+
+REQUEST DETAILS
+Type: ${formData.requestType}
+Priority: ${formData.priority.toUpperCase()}
+
+Title: ${formData.title}
+
+Description:
+${formData.description}
+
+Use Case:
+${formData.useCase}
+
+Affected Areas:
+${formData.areas.join(', ') || 'N/A'}
+
+Current Workaround:
+${formData.workaround || 'None'}
+
+Additional Information:
+${formData.additionalInfo || 'None'}
+
+═══════════════════════════════════════
+Please review and respond to: ${formData.email}
+            `.trim();
+
+            // Open email client with pre-filled data
+            // Replace with your actual support email
+            const supportEmail = 'support@yourcompany.com'; // UPDATE THIS!
+            const mailtoLink = `mailto:${supportEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
+
+            // Show success message
+            document.getElementById('enhancementForm').style.display = 'none';
+            document.querySelector('.info-box').style.display = 'none';
+            document.querySelector('.back-link').style.display = 'none';
+            document.getElementById('successMessage').classList.add('active');
+            document.getElementById('referenceId').textContent = referenceId;
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            console.log('Enhancement Request Submitted:', formData);
+        });
+
+        function submitAnother() {
+            // Reset form
+            document.getElementById('enhancementForm').reset();
+            document.getElementById('enhancementForm').style.display = 'block';
+            document.querySelector('.info-box').style.display = 'block';
+            document.querySelector('.back-link').style.display = 'block';
+            document.getElementById('successMessage').classList.remove('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Auto-save draft to localStorage
+        let draftTimeout;
+        function saveDraft() {
+            clearTimeout(draftTimeout);
+            draftTimeout = setTimeout(() => {
+                const draft = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    organization: document.getElementById('organization').value,
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    useCase: document.getElementById('useCase').value,
+                    priority: document.getElementById('priority').value,
+                    workaround: document.getElementById('workaround').value,
+                    additionalInfo: document.getElementById('additionalInfo').value
+                };
+                localStorage.setItem('enhancementRequestDraft', JSON.stringify(draft));
+            }, 1000);
+        }
+
+        // Load draft if exists
+        window.addEventListener('load', () => {
+            const draft = localStorage.getItem('enhancementRequestDraft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                if (confirm('Would you like to restore your previous draft?')) {
+                    document.getElementById('name').value = data.name || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('organization').value = data.organization || '';
+                    document.getElementById('title').value = data.title || '';
+                    document.getElementById('description').value = data.description || '';
+                    document.getElementById('useCase').value = data.useCase || '';
+                    document.getElementById('priority').value = data.priority || '';
+                    document.getElementById('workaround').value = data.workaround || '';
+                    document.getElementById('additionalInfo').value = data.additionalInfo || '';
+                } else {
+                    localStorage.removeItem('enhancementRequestDraft');
+                }
+            }
+        });
+
+        // Auto-save on input
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+            element.addEventListener('input', saveDraft);
+        });
+
+        // Clear draft on successful submit
+        document.getElementById('enhancementForm').addEventListener('submit', () => {
+            localStorage.removeItem('enhancementRequestDraft');
+        });
+    </script>
+</body>
+</html>
