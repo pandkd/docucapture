@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
-const { ipcRenderer } = window.require('electron');
+// Declare the electronAPI on the window object
+declare global {
+  interface Window {
+    electronAPI: {
+      captureScreenshot: () => Promise<{ success: boolean; data?: string; error?: string }>;
+      saveProject: (projectData: any) => Promise<{ success: boolean; path?: string; error?: string }>;
+      loadProject: (filePath: string) => Promise<{ success: boolean; project?: any; error?: string }>;
+      exportHTML: (projectData: any) => Promise<{ success: boolean; path?: string; error?: string }>;
+      onNewProject: (callback: () => void) => () => void;
+      onTakeScreenshot: (callback: () => void) => () => void;
+      onSaveProject: (callback: () => void) => () => void;
+      onOpenProject: (callback: (filePath: string) => void) => () => void;
+    };
+  }
+}
 
 interface Step {
   id: string;
@@ -26,20 +40,18 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // Listen for menu events
-    ipcRenderer.on('new-project', handleNewProject);
-    ipcRenderer.on('take-screenshot', handleCaptureScreenshot);
-    ipcRenderer.on('save-project', handleSaveProject);
-    ipcRenderer.on('open-project', (event: any, filePath: string) => {
-      handleLoadProject(filePath);
-    });
+    const cleanupNewProject = window.electronAPI.onNewProject(handleNewProject);
+    const cleanupTakeScreenshot = window.electronAPI.onTakeScreenshot(handleCaptureScreenshot);
+    const cleanupSaveProject = window.electronAPI.onSaveProject(handleSaveProject);
+    const cleanupOpenProject = window.electronAPI.onOpenProject(handleLoadProject);
 
     return () => {
-      ipcRenderer.removeAllListeners('new-project');
-      ipcRenderer.removeAllListeners('take-screenshot');
-      ipcRenderer.removeAllListeners('save-project');
-      ipcRenderer.removeAllListeners('open-project');
+      cleanupNewProject();
+      cleanupTakeScreenshot();
+      cleanupSaveProject();
+      cleanupOpenProject();
     };
-  }, [project]);
+  }, []);
 
   const handleNewProject = () => {
     if (project.steps.length > 0) {
@@ -64,7 +76,7 @@ const App: React.FC = () => {
   const handleCaptureScreenshot = async () => {
     setIsCapturing(true);
     try {
-      const result = await ipcRenderer.invoke('capture-screenshot');
+      const result = await window.electronAPI.captureScreenshot();
       if (result.success) {
         const newStep: Step = {
           id: Date.now().toString(),
@@ -89,7 +101,7 @@ const App: React.FC = () => {
 
   const handleSaveProject = async () => {
     try {
-      const result = await ipcRenderer.invoke('save-project', project);
+      const result = await window.electronAPI.saveProject(project);
       if (result.success) {
         alert('Project saved successfully!');
       } else if (result.error !== 'Save cancelled') {
@@ -102,7 +114,7 @@ const App: React.FC = () => {
 
   const handleLoadProject = async (filePath: string) => {
     try {
-      const result = await ipcRenderer.invoke('load-project', filePath);
+      const result = await window.electronAPI.loadProject(filePath);
       if (result.success) {
         setProject(result.project);
         setSelectedStepIndex(null);
@@ -116,7 +128,7 @@ const App: React.FC = () => {
 
   const handleExportHTML = async () => {
     try {
-      const result = await ipcRenderer.invoke('export-html', project);
+      const result = await window.electronAPI.exportHTML(project);
       if (result.success) {
         alert('Documentation exported successfully!');
       } else if (result.error !== 'Export cancelled') {

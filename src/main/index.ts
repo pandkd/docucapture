@@ -1,10 +1,8 @@
 const { app, BrowserWindow, ipcMain, desktopCapturer, dialog, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const os = require('os');
 
 let mainWindow: typeof BrowserWindow.prototype | null = null;
-let currentProject: any = null;
 
 // Create the main application window
 function createWindow() {
@@ -12,9 +10,9 @@ function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      enableRemoteModule: true,
+      preload: path.join(__dirname, '../preload/preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 

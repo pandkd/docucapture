@@ -6,9 +6,10 @@
   "scripts": {
     "build:renderer": "webpack --mode production",
     "build:main": "tsc --project tsconfig.main.json",
-    "build": "npm run build:renderer && npm run build:main",
+    "build:preload": "tsc --project tsconfig.preload.json",
+    "build": "npm run build:renderer && npm run build:main && npm run build:preload",
     "start": "npm run build && electron .",
-    "dev": "webpack --mode development && NODE_ENV=development electron .",
+    "dev": "webpack --mode development && npm run build:main && npm run build:preload && NODE_ENV=development electron .",
     "test": "echo \"No tests specified\" && exit 0",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder"
