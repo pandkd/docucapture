@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuCapture Controls</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: transparent;
+            overflow: hidden;
+            -webkit-app-region: drag;
+            user-select: none;
+        }
+
+        .floating-container {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .floating-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .recording-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: #dc3545;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .floating-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            -webkit-app-region: no-drag;
+        }
+
+        .floating-btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            color: white;
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .floating-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-capture {
+            background: #27ae60;
+        }
+
+        .btn-capture:hover {
+            background: #229954;
+        }
+
+        .btn-stop {
+            background: #dc3545;
+        }
+
+        .btn-stop:hover {
+            background: #c82333;
+        }
+
+        .btn-show {
+            background: rgba(255,255,255,0.2);
+            font-size: 10px;
+            padding: 6px 10px;
+        }
+
+        .btn-show:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .shortcut-hint {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 9px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-container">
+        <div class="floating-header">
+            <div class="recording-status">
+                <div class="recording-dot"></div>
+                <span>RECORDING</span>
+            </div>
+        </div>
+        
+        <div class="floating-buttons">
+            <button class="floating-btn btn-capture" onclick="captureStep()" title="Capture current screen (Ctrl+Shift+S)">
+                Capture Step
+            </button>
+            <button class="floating-btn btn-stop" onclick="stopRecording()" title="Stop recording (Ctrl+Shift+R)">
+                Stop Recording
+            </button>
+            <button class="floating-btn btn-show" onclick="showMainWindow()" title="Show main window (Ctrl+Shift+D)">
+                Show App
+            </button>
+        </div>
+
+        <div class="shortcut-hint">
+            Ctrl+Shift+S to capture
+        </div>
+    </div>
+
+    <script>
+        function captureStep() {
+            window.electronAPI.floatingCapture();
+            // Visual feedback
+            const btn = event.target;
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => btn.style.transform = '', 100);
+        }
+
+        function stopRecording() {
+            window.electronAPI.floatingStop();
+        }
+
+        function showMainWindow() {
+            window.electronAPI.floatingShowMain();
+        }
+
+        // Flash effect when capture is triggered externally
+        window.electronAPI.onCaptureStep(() => {
+            document.body.style.opacity = '0.7';
+            setTimeout(() => document.body.style.opacity = '1', 100);
+        });
+    </script>
+</body>
+</html>

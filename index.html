@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuCapture - Step-by-Step Documentation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #2c5282;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a365d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 82, 130, 0.4);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .status {
+            padding: 15px 30px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            display: none;
+        }
+
+        .status.active {
+            display: block;
+        }
+
+        .status.recording {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .status.alert {
+            background: #f8d7da;
+            border-color: #dc3545;
+            animation: pulse-alert 2s infinite;
+        }
+
+        @keyframes pulse-alert {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .guide-title-section {
+            margin-bottom: 30px;
+        }
+
+        .guide-title-section input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: 600;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Timeline View Styles */
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 0 30px;
+        }
+
+        .view-toggle button {
+            padding: 8px 16px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .view-toggle button.active {
+            background: #2c5282;
+            color: white;
+            border-color: #2c5282;
+        }
+
+        .view-toggle button:hover:not(.active) {
+            border-color: #2c5282;
+            color: #2c5282;
+        }
+
+        .timeline-container {
+            display: none;
+            padding: 20px 0;
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+
+        .timeline-container.active {
+            display: block;
+        }
+
+        .timeline-wrapper {
+            display: flex;
+            gap: 20px;
+            padding: 20px 30px;
+            min-width: min-content;
+        }
+
+        .timeline-item {
+            flex-shrink: 0;
+            width: 200px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: move;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .timeline-item:hover {
+            border-color: #2c5282;
+            box-shadow: 0 4px 12px rgba(44, 82, 130, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .timeline-item.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+
+        .timeline-item.has-sensitive-data {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .timeline-item.grouped {
+            border-color: #ffc107;
+            border-width: 3px;
+        }
+
+        .timeline-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: #2c5282;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .timeline-thumbnail {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+
+        .timeline-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .timeline-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .timeline-actions button {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 3px;
+        }
+
+        .group-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ffc107;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .timeline-group-divider {
+            flex-shrink: 0;
+            width: 3px;
+            background: #ffc107;
+            border-radius: 2px;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .timeline-group-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffc107;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            border-color: #2c5282;
+            box-shadow: 0 4px 12px rgba(44, 82, 130, 0.1);
+        }
+
+        .step.has-sensitive-data {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: #2c5282;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .step-screenshot-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .step-screenshot {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+        }
+
+        .sensitive-data-alert {
+            background: #dc3545;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            animation: pulse-alert 2s infinite;
+        }
+
+        .sensitive-data-alert .icon {
+            font-size: 24px;
+        }
+
+        .step-description {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .step-description:focus {
+            outline: none;
+            border-color: #2c5282;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .recording-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+
+        .recording-indicator.active {
+            display: flex;
+        }
+
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 4px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Redaction Modal */
+        .redaction-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .redaction-modal.active {
+            display: flex;
+        }
+
+        .redaction-container {
+            background: white;
+            border-radius: 8px;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .redaction-header {
+            background: #2c5282;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .redaction-header h3 {
+            font-size: 20px;
+        }
+
+        .redaction-tools {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .redaction-tool-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .redaction-tool-group label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-option input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .redaction-canvas-container {
+            flex: 1;
+            overflow: auto;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .redaction-canvas {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: crosshair;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .redaction-instructions {
+            background: #fff3cd;
+            padding: 15px 20px;
+            border-bottom: 2px solid #ffc107;
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .redaction-footer {
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .detected-areas {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detected-areas h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detected-item {
+            background: white;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .header, .controls, .export-section {
+                display: none;
+            }
+            
+            .step {
+                page-break-inside: avoid;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="recording-indicator" id="recordingIndicator">
+        <div class="recording-dot"></div>
+        <span>Recording in progress...</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>DocuCapture</h1>
+            <p>Create step-by-step documentation with automatic screen capture</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <button class="btn btn-primary" id="startBtn" onclick="startCapture()">
+                    Start Recording
+                </button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopCapture()" disabled>
+                    Stop Recording
+                </button>
+                <button class="btn btn-success" id="captureBtn" onclick="captureScreenshot()" disabled>
+                    Capture Step
+                </button>
+                <button class="btn btn-secondary" id="addStepBtn" onclick="addManualStep()">
+                    Add Manual Step
+                </button>
+            </div>
+        </div>
+
+        <div class="status" id="statusBar">
+            Ready to start. Click "Start Recording" to begin capturing your process.
+        </div>
+
+        <div class="content">
+            <div class="guide-title-section">
+                <input type="text" id="guideTitle" class="input-field" placeholder="Enter guide title (e.g., 'How to Create a New Project')" value="Untitled Guide">
+            </div>
+
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button id="listViewBtn" class="active" onclick="switchView('list')">
+                    List View
+                </button>
+                <button id="timelineViewBtn" onclick="switchView('timeline')">
+                    Timeline View
+                </button>
+                <button id="groupStepsBtn" onclick="smartGroupSteps()" style="margin-left: auto;">
+                    Smart Group Steps
+                </button>
+            </div>
+
+            <!-- Timeline View -->
+            <div id="timelineContainer" class="timeline-container">
+                <div id="timelineWrapper" class="timeline-wrapper">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">●</div>
+                        <h3>No steps yet</h3>
+                        <p>Start recording to see timeline view</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- List View (existing) -->
+            <div id="stepsContainer" class="steps-container">
+                <div class="empty-state">
+                    <div class="empty-state-icon">●</div>
+                    <h3>No steps yet</h3>
+                    <p>Start recording or add manual steps to create your documentation</p>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <h3 style="margin-bottom: 15px;">Export Your Guide</h3>
+                <div class="export-options">
+                    <button class="btn btn-primary" onclick="exportAsHTML()">
+                        Export as HTML
+                    </button>
+                    <button class="btn btn-primary" onclick="exportAsMarkdown()">
+                        Export as Markdown
+                    </button>
+                    <button class="btn btn-warning" onclick="exportForAnalysis()">
+                        Export for Analysis
+                    </button>
+                    <button class="btn btn-primary" onclick="printGuide()">
+                        Print / Save as PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAll()">
+                        Clear All Steps
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redaction Modal -->
+    <div class="redaction-modal" id="redactionModal">
+        <div class="redaction-container">
+            <div class="redaction-header">
+                <h3>Redact Sensitive Information</h3>
+                <button class="btn btn-danger btn-small" onclick="closeRedactionModal()">Close</button>
+            </div>
+            
+            <div id="detectedAreasPanel" style="display: none;">
+                <div class="detected-areas">
+                    <h4>
+                        <span style="font-size: 20px;">⚠</span>
+                        Potential Sensitive Data Detected
+                    </h4>
+                    <div id="detectedAreasList"></div>
+                    <p style="margin-top: 10px; font-size: 13px; color: #856404;">
+                        Please review and redact any sensitive information before sharing this documentation.
+                    </p>
+                </div>
+            </div>
+
+            <div class="redaction-instructions">
+                Click and drag on the image to select areas to redact. Choose your redaction style below.
+            </div>
+
+            <div class="redaction-tools">
+                <div class="redaction-tool-group">
+                    <label>Redaction Style:</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="blurOption" name="redactionType" value="blur" checked>
+                            <label for="blurOption">Blur</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="pixelateOption" name="redactionType" value="pixelate">
+                            <label for="pixelateOption">Pixelate</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="blackboxOption" name="redactionType" value="blackbox">
+                            <label for="blackboxOption">Black Box</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-small" onclick="undoLastRedaction()">Undo Last</button>
+                <button class="btn btn-danger btn-small" onclick="clearAllRedactions()">Clear All</button>
+            </div>
+
+            <div class="redaction-canvas-container">
+                <canvas id="redactionCanvas"></canvas>
+            </div>
+
+            <div class="redaction-footer">
+                <button class="btn btn-secondary" onclick="closeRedactionModal()">Cancel</button>
+                <button class="btn btn-success" onclick="applyRedactions()">Apply & Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mediaStream = null;
+        let steps = [];
+        let stepCounter = 0;
+        let currentRedactionStep = null;
+        let redactionCanvas = null;
+        let redactionCtx = null;
+        let originalImage = null;
+        let redactionAreas = [];
+        let isDrawing = false;
+        let startX, startY;
+
+        // Sensitive data patterns
+        const SENSITIVE_PATTERNS = {
+            password: /password|passwd|pwd|pass\s*:|secret/i,
+            creditCard: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/,
+            ssn: /\b\d{3}-\d{2}-\d{4}\b/,
+            email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/,
+            phone: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/,
+            apiKey: /api[_-]?key|token|bearer/i,
+            account: /account\s*#|acct\s*#|account\s*number/i
+        };
+
+        function updateStatus(message, type = '') {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.classList.add('active');
+            statusBar.className = 'status active ' + type;
+        }
+
+        async function startCapture() {
+            try {
+                // Check if running in Electron
+                if (!window.electronAPI) {
+                    alert('This feature requires the desktop app. Please download DocuCapture Desktop.');
+                    return;
+                }
+
+                // Get available sources (screens and windows)
+                const sources = await window.electronAPI.getSources();
+                
+                if (sources.length === 0) {
+                    alert('No screens or windows available to capture.');
+                    return;
+                }
+
+                // Show source selection dialog
+                const sourceId = await showSourceSelector(sources);
+                if (!sourceId) {
+                    return; // User cancelled
+                }
+
+                // Start capture with selected source
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    audio: false,
+                    video: {
+                        mandatory: {
+                            chromeMediaSource: 'desktop',
+                            chromeMediaSourceId: sourceId,
+                            minWidth: 1280,
+                            maxWidth: 4096,
+                            minHeight: 720,
+                            maxHeight: 2160
+                        }
+                    }
+                });
+
+                isRecording = true;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('captureBtn').disabled = false;
+                document.getElementById('recordingIndicator').classList.add('active');
+                
+                // Notify main process that recording started
+                window.electronAPI.setRecordingState(true);
+                
+                updateStatus('Recording started! Use Ctrl+Shift+S to capture steps from ANY application.', 'recording');
+
+                mediaStream.getVideoTracks()[0].addEventListener('ended', () => {
+                    stopCapture();
+                });
+
+            } catch (err) {
+                alert('Screen capture failed. Please try again.');
+                console.error('Error starting capture:', err);
+            }
+        }
+
+        // Source selector dialog
+        function showSourceSelector(sources) {
+            return new Promise((resolve) => {
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                `;
+
+                const container = document.createElement('div');
+                container.style.cssText = `
+                    background: white;
+                    border-radius: 12px;
+                    padding: 30px;
+                    max-width: 800px;
+                    max-height: 600px;
+                    overflow-y: auto;
+                `;
+
+                let html = `
+                    <h2 style="color: #1e40af; margin-bottom: 20px;">Select Screen or Window to Capture</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                `;
+
+                sources.forEach((source, index) => {
+                    const isScreen = source.id.startsWith('screen');
+                    html += `
+                        <div onclick="selectSource('${source.id}')" style="
+                            cursor: pointer;
+                            border: 2px solid #e9ecef;
+                            border-radius: 8px;
+                            padding: 12px;
+                            transition: all 0.2s ease;
+                            text-align: center;
+                        " onmouseover="this.style.borderColor='#2c5282'; this.style.boxShadow='0 4px 12px rgba(44,82,130,0.2)'" 
+                           onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+                            <img src="${source.thumbnail.toDataURL()}" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 8px;">
+                            <div style="font-weight: 600; font-size: 12px; color: #2c5282; margin-bottom: 4px;">
+                                ${isScreen ? 'Screen' : 'Window'}
+                            </div>
+                            <div style="font-size: 11px; color: #6c757d; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                ${source.name}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <button onclick="selectSource(null)" style="
+                        width: 100%;
+                        padding: 12px;
+                        background: #6c757d;
+                        color: white;
+                        border: none;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">Cancel</button>
+                `;
+
+                container.innerHTML = html;
+                modal.appendChild(container);
+                document.body.appendChild(modal);
+
+                window.selectSource = (id) => {
+                    document.body.removeChild(modal);
+                    resolve(id);
+                };
+            });
+        }
+
+        function stopCapture() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+
+            isRecording = false;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('captureBtn').disabled = true;
+            document.getElementById('recordingIndicator').classList.remove('active');
+            
+            // Notify main process that recording stopped
+            if (window.electronAPI) {
+                window.electronAPI.setRecordingState(false);
+            }
+            
+            updateStatus('Recording stopped. You can continue editing your steps or export your guide.');
+        }
+
+        async function captureScreenshot() {
+            if (!mediaStream) return;
+
+            try {
+                const video = document.createElement('video');
+                video.srcObject = mediaStream;
+                video.play();
+
+                await new Promise(resolve => {
+                    video.onloadedmetadata = resolve;
+                });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+
+                const screenshot = canvas.toDataURL('image/png');
+                addStep(screenshot);
+                
+                updateStatus(`Step ${steps.length} captured! Continue your process and capture the next step.`, 'recording');
+
+            } catch (err) {
+                console.error('Error capturing screenshot:', err);
+                alert('Failed to capture screenshot. Please try again.');
+            }
+        }
+
+        function detectSensitiveData(screenshot) {
+            // This is a basic detection - in production, you'd use OCR or more advanced detection
+            // For now, we'll simulate detection based on common patterns
+            const detections = [];
+            
+            // Simulate detection based on random chance (in real implementation, use OCR)
+            const detectChance = Math.random();
+            
+            if (detectChance > 0.7) {
+                detections.push('Possible password field detected');
+            }
+            if (detectChance > 0.8) {
+                detections.push('Possible email address visible');
+            }
+            if (detectChance > 0.85) {
+                detections.push('Possible account number visible');
+            }
+            
+            return detections;
+        }
+
+        function addStep(screenshot = null) {
+            stepCounter++;
+            
+            let sensitiveDetections = [];
+            if (screenshot) {
+                sensitiveDetections = detectSensitiveData(screenshot);
+            }
+            
+            const step = {
+                id: stepCounter,
+                number: steps.length + 1,
+                screenshot: screenshot,
+                description: screenshot ? 'Describe what action was performed in this step...' : 'Describe this step...',
+                hasSensitiveData: sensitiveDetections.length > 0,
+                sensitiveDetections: sensitiveDetections
+            };
+            steps.push(step);
+            renderSteps();
+            
+            if (sensitiveDetections.length > 0) {
+                updateStatus(`⚠ WARNING: Step ${step.number} may contain sensitive information! Please review and redact.`, 'alert');
+            }
+        }
+
+        function addManualStep() {
+            addStep(null);
+            updateStatus('Manual step added. You can add a description or upload an image.');
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            
+            if (steps.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">●</div>
+                        <h3>No steps yet</h3>
+                        <p>Start recording or add manual steps to create your documentation</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = steps.map((step, index) => `
+                <div class="step ${step.hasSensitiveData ? 'has-sensitive-data' : ''} ${step.groupId ? 'grouped' : ''}" id="step-${step.id}">
+                    ${step.hasSensitiveData ? `
+                        <div class="sensitive-data-alert">
+                            <span class="icon">⚠</span>
+                            <div>
+                                <strong>Sensitive Data Detected!</strong>
+                                <div style="font-size: 14px; margin-top: 5px;">${step.sensitiveDetections.join(', ')}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${step.groupLabel ? `
+                        <div style="background: #ffc107; color: #000; padding: 8px 12px; margin: -20px -20px 15px -20px; font-weight: 700; font-size: 14px;">
+                            ${step.groupLabel}
+                        </div>
+                    ` : ''}
+                    <div class="step-header">
+                        <div class="step-number">${step.number}</div>
+                        <div class="step-actions">
+                            ${step.screenshot ? `
+                                <button class="btn btn-warning btn-small" onclick="openRedactionTool(${index})">
+                                    Redact Data
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-secondary btn-small" onclick="moveStepUp(${index})" ${index === 0 ? 'disabled' : ''}>
+                                ↑
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="moveStepDown(${index})" ${index === steps.length - 1 ? 'disabled' : ''}>
+                                ↓
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="uploadImageForStep(${index})">
+                                Upload Image
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deleteStep(${index})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    ${step.screenshot ? `
+                        <div class="step-screenshot-container">
+                            <img src="${step.screenshot}" class="step-screenshot" alt="Step ${step.number} screenshot" onclick="openRedactionTool(${index})">
+                        </div>
+                    ` : ''}
+                    <textarea class="step-description" placeholder="Describe this step..." onchange="updateStepDescription(${index}, this.value)">${step.description}</textarea>
+                </div>
+            `).join('');
+            
+            // Also update timeline if active
+            if (document.getElementById('timelineViewBtn').classList.contains('active')) {
+                renderTimeline();
+            }
+        }
+
+        // View switching
+        let currentView = 'list';
+
+        function switchView(view) {
+            currentView = view;
+            
+            if (view === 'list') {
+                document.getElementById('listViewBtn').classList.add('active');
+                document.getElementById('timelineViewBtn').classList.remove('active');
+                document.getElementById('stepsContainer').style.display = 'flex';
+                document.getElementById('timelineContainer').classList.remove('active');
+            } else {
+                document.getElementById('listViewBtn').classList.remove('active');
+                document.getElementById('timelineViewBtn').classList.add('active');
+                document.getElementById('stepsContainer').style.display = 'none';
+                document.getElementById('timelineContainer').classList.add('active');
+                renderTimeline();
+            }
+            
+            showKeyboardHint(`Switched to ${view === 'list' ? 'List' : 'Timeline'} View`);
+        }
+
+        // Timeline rendering
+        function renderTimeline() {
+            const wrapper = document.getElementById('timelineWrapper');
+            
+            if (steps.length === 0) {
+                wrapper.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">●</div>
+                        <h3>No steps yet</h3>
+                        <p>Start recording to see timeline view</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            let currentGroup = null;
+
+            steps.forEach((step, index) => {
+                // Add group divider if new group starts
+                if (step.groupLabel && step.groupLabel !== currentGroup) {
+                    currentGroup = step.groupLabel;
+                    html += `
+                        <div class="timeline-group-divider">
+                            <div class="timeline-group-label">${step.groupLabel}</div>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="timeline-item ${step.hasSensitiveData ? 'has-sensitive-data' : ''} ${step.groupId ? 'grouped' : ''}" 
+                         draggable="true" 
+                         data-index="${index}"
+                         ondragstart="handleDragStart(event, ${index})"
+                         ondragover="handleDragOver(event)"
+                         ondrop="handleDrop(event, ${index})"
+                         ondragend="handleDragEnd(event)">
+                        <div class="timeline-number">${step.number}</div>
+                        ${step.groupId ? `<div class="group-badge">G${step.groupId}</div>` : ''}
+                        ${step.screenshot ? `
+                            <img src="${step.screenshot}" class="timeline-thumbnail" alt="Step ${step.number}">
+                        ` : `
+                            <div class="timeline-thumbnail" style="display: flex; align-items: center; justify-content: center; color: #adb5bd;">
+                                No Image
+                            </div>
+                        `}
+                        <div class="timeline-title">${step.description || 'Step ' + step.number}</div>
+                        <div class="timeline-actions">
+                            ${step.screenshot ? `
+                                <button class="btn btn-warning btn-small" onclick="openRedactionTool(${index})" title="Redact">
+                                    R
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-primary btn-small" onclick="switchView('list'); document.getElementById('step-${step.id}').scrollIntoView({behavior: 'smooth', block: 'center'})" title="Edit">
+                                E
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deleteStep(${index})" title="Delete">
+                                X
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            wrapper.innerHTML = html;
+        }
+
+        // Drag and drop for timeline
+        let draggedIndex = null;
+
+        function handleDragStart(event, index) {
+            draggedIndex = index;
+            event.target.classList.add('dragging');
+            event.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDrop(event, targetIndex) {
+            event.preventDefault();
+            
+            if (draggedIndex === null || draggedIndex === targetIndex) return;
+            
+            // Reorder steps array
+            const draggedStep = steps[draggedIndex];
+            steps.splice(draggedIndex, 1);
+            steps.splice(targetIndex, 0, draggedStep);
+            
+            // Renumber
+            steps.forEach((step, i) => {
+                step.number = i + 1;
+            });
+            
+            renderTimeline();
+            showKeyboardHint(`Moved step ${draggedStep.number} to position ${targetIndex + 1}`);
+        }
+
+        function handleDragEnd(event) {
+            event.target.classList.remove('dragging');
+            draggedIndex = null;
+        }
+
+        // Smart Grouping
+        function smartGroupSteps() {
+            if (steps.length === 0) {
+                alert('No steps to group! Add some steps first.');
+                return;
+            }
+
+            if (steps.length < 3) {
+                alert('Need at least 3 steps to create meaningful groups.');
+                return;
+            }
+
+            // Reset existing groups
+            steps.forEach(step => {
+                delete step.groupId;
+                delete step.groupLabel;
+            });
+
+            // Simple AI-like grouping algorithm
+            // Groups steps based on patterns in descriptions
+            let groups = [];
+            let currentGroupId = 1;
+            let currentGroupSteps = [];
+            let currentGroupKeywords = [];
+
+            steps.forEach((step, index) => {
+                const words = (step.description || '').toLowerCase().split(/\s+/).filter(w => w.length > 3);
+                
+                // Check if this step is similar to current group
+                const similarity = currentGroupKeywords.filter(kw => words.includes(kw)).length;
+                
+                if (currentGroupSteps.length === 0) {
+                    // Start first group
+                    currentGroupSteps.push(index);
+                    currentGroupKeywords = words.slice(0, 5);
+                } else if (similarity > 0 || currentGroupSteps.length < 3) {
+                    // Add to current group
+                    currentGroupSteps.push(index);
+                    currentGroupKeywords = [...new Set([...currentGroupKeywords, ...words.slice(0, 3)])];
+                } else {
+                    // Start new group
+                    if (currentGroupSteps.length >= 2) {
+                        groups.push({
+                            id: currentGroupId++,
+                            steps: [...currentGroupSteps],
+                            label: generateGroupLabel(currentGroupSteps)
+                        });
+                    }
+                    currentGroupSteps = [index];
+                    currentGroupKeywords = words.slice(0, 5);
+                }
+            });
+
+            // Add final group
+            if (currentGroupSteps.length >= 2) {
+                groups.push({
+                    id: currentGroupId,
+                    steps: currentGroupSteps,
+                    label: generateGroupLabel(currentGroupSteps)
+                });
+            }
+
+            // Apply groups to steps
+            groups.forEach(group => {
+                group.steps.forEach((stepIndex, i) => {
+                    steps[stepIndex].groupId = group.id;
+                    if (i === 0) {
+                        steps[stepIndex].groupLabel = group.label;
+                    }
+                });
+            });
+
+            renderSteps();
+            renderTimeline();
+            
+            if (groups.length > 0) {
+                showKeyboardHint(`Created ${groups.length} smart groups!`);
+                updateStatus(`Smart grouping complete! Created ${groups.length} logical groups of related steps.`);
+            } else {
+                alert('Could not create meaningful groups. Steps may be too different or too few.');
+            }
+        }
+
+        function generateGroupLabel(stepIndices) {
+            // Generate a label based on the steps in the group
+            const descriptions = stepIndices.map(i => steps[i].description || '').join(' ');
+            const words = descriptions.toLowerCase().split(/\s+/);
+            
+            // Find most common meaningful words
+            const wordCounts = {};
+            words.forEach(word => {
+                if (word.length > 4 && !['enter', 'click', 'select', 'choose', 'there'].includes(word)) {
+                    wordCounts[word] = (wordCounts[word] || 0) + 1;
+                }
+            });
+            
+            const sortedWords = Object.entries(wordCounts).sort((a, b) => b[1] - a[1]);
+            
+            if (sortedWords.length > 0) {
+                const topWord = sortedWords[0][0];
+                return topWord.charAt(0).toUpperCase() + topWord.slice(1) + ' Steps';
+            }
+            
+            // Fallback labels
+            const position = stepIndices[0] + 1;
+            if (position === 1) return 'Setup Phase';
+            if (position / steps.length < 0.3) return 'Initial Steps';
+            if (position / steps.length < 0.7) return 'Main Process';
+            return 'Final Steps';
+        }
+
+        function updateStepDescription(index, description) {
+            steps[index].description = description;
+        }
+
+        function deleteStep(index) {
+            if (confirm('Are you sure you want to delete this step?')) {
+                steps.splice(index, 1);
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+                updateStatus(`Step deleted. ${steps.length} steps remaining.`);
+            }
+        }
+
+        function moveStepUp(index) {
+            if (index > 0) {
+                [steps[index], steps[index - 1]] = [steps[index - 1], steps[index]];
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+            }
+        }
+
+        function moveStepDown(index) {
+            if (index < steps.length - 1) {
+                [steps[index], steps[index + 1]] = [steps[index + 1], steps[index]];
+                steps.forEach((step, i) => {
+                    step.number = i + 1;
+                });
+                renderSteps();
+            }
+        }
+
+        function uploadImageForStep(index) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        steps[index].screenshot = event.target.result;
+                        steps[index].sensitiveDetections = detectSensitiveData(event.target.result);
+                        steps[index].hasSensitiveData = steps[index].sensitiveDetections.length > 0;
+                        renderSteps();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Redaction Tool Functions
+        function openRedactionTool(stepIndex) {
+            currentRedactionStep = stepIndex;
+            const step = steps[stepIndex];
+            
+            if (!step.screenshot) return;
+            
+            const modal = document.getElementById('redactionModal');
+            modal.classList.add('active');
+            
+            // Show detected areas if any
+            const detectedPanel = document.getElementById('detectedAreasPanel');
+            const detectedList = document.getElementById('detectedAreasList');
+            
+            if (step.hasSensitiveData) {
+                detectedPanel.style.display = 'block';
+                detectedList.innerHTML = step.sensitiveDetections.map(d => 
+                    `<div class="detected-item">● ${d}</div>`
+                ).join('');
+            } else {
+                detectedPanel.style.display = 'none';
+            }
+            
+            // Setup canvas
+            redactionCanvas = document.getElementById('redactionCanvas');
+            redactionCtx = redactionCanvas.getContext('2d');
+            redactionAreas = [];
+            
+            // Load image
+            originalImage = new Image();
+            originalImage.onload = () => {
+                redactionCanvas.width = originalImage.width;
+                redactionCanvas.height = originalImage.height;
+                redactionCtx.drawImage(originalImage, 0, 0);
+                
+                // Setup mouse events
+                setupRedactionEvents();
+            };
+            originalImage.src = step.screenshot;
+        }
+
+        function closeRedactionModal() {
+            document.getElementById('redactionModal').classList.remove('active');
+            currentRedactionStep = null;
+            redactionAreas = [];
+        }
+
+        function setupRedactionEvents() {
+            redactionCanvas.onmousedown = (e) => {
+                isDrawing = true;
+                const rect = redactionCanvas.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+            };
+
+            redactionCanvas.onmousemove = (e) => {
+                if (!isDrawing) return;
+                
+                const rect = redactionCanvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+                
+                // Redraw original image and all redactions
+                redactionCtx.drawImage(originalImage, 0, 0);
+                redactionAreas.forEach(area => applyRedactionEffect(area));
+                
+                // Draw current selection
+                redactionCtx.strokeStyle = '#dc3545';
+                redactionCtx.lineWidth = 2;
+                redactionCtx.setLineDash([5, 5]);
+                redactionCtx.strokeRect(startX, startY, currentX - startX, currentY - startY);
+                redactionCtx.setLineDash([]);
+            };
+
+            redactionCanvas.onmouseup = (e) => {
+                if (!isDrawing) return;
+                isDrawing = false;
+                
+                const rect = redactionCanvas.getBoundingClientRect();
+                const endX = e.clientX - rect.left;
+                const endY = e.clientY - rect.top;
+                
+                const selectedType = document.querySelector('input[name="redactionType"]:checked').value;
+                
+                redactionAreas.push({
+                    x: Math.min(startX, endX),
+                    y: Math.min(startY, endY),
+                    width: Math.abs(endX - startX),
+                    height: Math.abs(endY - startY),
+                    type: selectedType
+                });
+                
+                // Redraw with new redaction
+                redactionCtx.drawImage(originalImage, 0, 0);
+                redactionAreas.forEach(area => applyRedactionEffect(area));
+            };
+        }
+
+        function applyRedactionEffect(area) {
+            const { x, y, width, height, type } = area;
+            
+            if (type === 'blur') {
+                // Apply blur effect
+                redactionCtx.filter = 'blur(10px)';
+                redactionCtx.drawImage(redactionCanvas, x, y, width, height, x, y, width, height);
+                redactionCtx.filter = 'none';
+            } else if (type === 'pixelate') {
+                // Apply pixelation
+                const pixelSize = 10;
+                const imageData = redactionCtx.getImageData(x, y, width, height);
+                
+                for (let py = 0; py < height; py += pixelSize) {
+                    for (let px = 0; px < width; px += pixelSize) {
+                        const index = (py * width + px) * 4;
+                        const r = imageData.data[index];
+                        const g = imageData.data[index + 1];
+                        const b = imageData.data[index + 2];
+                        
+                        redactionCtx.fillStyle = `rgb(${r},${g},${b})`;
+                        redactionCtx.fillRect(x + px, y + py, pixelSize, pixelSize);
+                    }
+                }
+            } else if (type === 'blackbox') {
+                // Apply black box
+                redactionCtx.fillStyle = '#000000';
+                redactionCtx.fillRect(x, y, width, height);
+            }
+        }
+
+        function undoLastRedaction() {
+            if (redactionAreas.length > 0) {
+                redactionAreas.pop();
+                redactionCtx.drawImage(originalImage, 0, 0);
+                redactionAreas.forEach(area => applyRedactionEffect(area));
+            }
+        }
+
+        function clearAllRedactions() {
+            redactionAreas = [];
+            redactionCtx.drawImage(originalImage, 0, 0);
+        }
+
+        function applyRedactions() {
+            if (currentRedactionStep === null) return;
+            
+            // Save the redacted image
+            const redactedImage = redactionCanvas.toDataURL('image/png');
+            steps[currentRedactionStep].screenshot = redactedImage;
+            steps[currentRedactionStep].hasSensitiveData = false;
+            steps[currentRedactionStep].sensitiveDetections = [];
+            
+            renderSteps();
+            closeRedactionModal();
+            updateStatus('Redactions applied successfully!');
+        }
+
+        function clearAll() {
+            if (steps.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear all steps? This cannot be undone.')) {
+                steps = [];
+                stepCounter = 0;
+                renderSteps();
+                updateStatus('All steps cleared. Ready to start a new guide.');
+            }
+        }
+
+        function exportAsHTML() {
+            const title = document.getElementById('guideTitle').value;
+            const date = new Date().toLocaleDateString();
+            
+            let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { 
+            color: #2c5282; 
+            border-bottom: 3px solid #2c5282; 
+            padding-bottom: 10px; 
+        }
+        .step { 
+            margin: 30px 0; 
+            padding: 20px; 
+            border: 1px solid #e9ecef; 
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        .step-number { 
+            background: #2c5282; 
+            color: white; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 4px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            margin: 15px 0;
+        }
+        .meta { 
+            color: #6c757d; 
+            font-size: 14px; 
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>${title}</h1>
+    <div class="meta">Created on ${date}</div>
+    ${steps.map(step => `
+        <div class="step">
+            <div class="step-number">${step.number}</div>
+            ${step.screenshot ? `<img src="${step.screenshot}" alt="Step ${step.number}">` : ''}
+            <p>${step.description}</p>
+        </div>
+    `).join('')}
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e9ecef; color: #6c757d; font-size: 14px;">
+        Generated by DocuCapture
+    </footer>
+</body>
+</html>`;
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Guide exported as HTML file!');
+        }
+
+        function exportAsMarkdown() {
+            const title = document.getElementById('guideTitle').value;
+            const date = new Date().toLocaleDateString();
+            
+            let markdown = `# ${title}\n\n*Created on ${date}*\n\n---\n\n`;
+            
+            steps.forEach(step => {
+                markdown += `## Step ${step.number}\n\n`;
+                if (step.screenshot) {
+                    markdown += `![Step ${step.number}](${step.screenshot})\n\n`;
+                }
+                markdown += `${step.description}\n\n---\n\n`;
+            });
+            
+            markdown += `*Generated by DocuCapture*`;
+
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Guide exported as Markdown file!');
+        }
+
+        function exportForAnalysis() {
+            const title = document.getElementById('guideTitle').value;
+            const exportData = {
+                title: title,
+                steps: steps,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_analysis_export.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            updateStatus('Process exported! Import this file into DocuCapture Analyst for analysis.');
+        }
+
+        function printGuide() {
+            window.print();
+        }
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Check if Ctrl/Cmd + Shift is pressed
+            const modKey = e.ctrlKey || e.metaKey;
+            
+            if (modKey && e.shiftKey) {
+                switch(e.key.toLowerCase()) {
+                    case 's':
+                        e.preventDefault();
+                        if (isRecording) {
+                            captureStep();
+                            showKeyboardHint('Step Captured! (Ctrl+Shift+S)');
+                        }
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        if (!isRecording) {
+                            startRecording();
+                            showKeyboardHint('Recording Started! (Ctrl+Shift+R)');
+                        } else {
+                            stopRecording();
+                            showKeyboardHint('Recording Stopped! (Ctrl+Shift+R)');
+                        }
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        // Scroll to export section
+                        document.querySelector('.export-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        showKeyboardHint('Export Menu (Ctrl+Shift+E)');
+                        break;
+                    case 'a':
+                        e.preventDefault();
+                        if (steps.length > 0) {
+                            exportForAnalysis();
+                            showKeyboardHint('Exported for Analysis! (Ctrl+Shift+A)');
+                        }
+                        break;
+                    case 't':
+                        e.preventDefault();
+                        // Toggle timeline view
+                        switchView(currentView === 'list' ? 'timeline' : 'list');
+                        break;
+                    case 'g':
+                        e.preventDefault();
+                        smartGroupSteps();
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        showKeyboardShortcuts();
+                        break;
+                }
+            }
+            
+            // Arrow keys for navigation (no modifier needed)
+            if (!e.ctrlKey && !e.shiftKey && !e.metaKey && !e.altKey) {
+                const activeElement = document.activeElement;
+                const isTyping = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
+                
+                if (!isTyping) {
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        // Scroll to previous step
+                        const stepElements = document.querySelectorAll('.step');
+                        if (stepElements.length > 0) {
+                            stepElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        // Scroll to last step
+                        const stepElements = document.querySelectorAll('.step');
+                        if (stepElements.length > 0) {
+                            stepElements[stepElements.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                }
+            }
+        });
+
+        // Show keyboard hint notification
+        function showKeyboardHint(message) {
+            const hint = document.createElement('div');
+            hint.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #2c5282;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            hint.textContent = message;
+            document.body.appendChild(hint);
+            
+            setTimeout(() => {
+                hint.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => hint.remove(), 300);
+            }, 2000);
+        }
+
+        // Show keyboard shortcuts help
+        function showKeyboardShortcuts() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 30px; max-width: 550px; max-height: 80vh; overflow-y: auto;">
+                    <h2 style="color: #1e40af; margin-bottom: 20px;">Keyboard Shortcuts</h2>
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #2c5282; font-size: 16px; margin-bottom: 12px; border-bottom: 2px solid #e9ecef; padding-bottom: 8px;">Recording & Capture</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+R</div>
+                            <div>Start/Stop Recording</div>
+                            
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+S</div>
+                            <div>Capture Step</div>
+                        </div>
+
+                        <h3 style="color: #2c5282; font-size: 16px; margin-bottom: 12px; border-bottom: 2px solid #e9ecef; padding-bottom: 8px;">View & Organization</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+T</div>
+                            <div>Toggle Timeline/List View</div>
+                            
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+G</div>
+                            <div>Smart Group Steps</div>
+                            
+                            <div style="font-weight: 600; color: #2c5282;">Arrow Up</div>
+                            <div>Scroll to First Step</div>
+                            
+                            <div style="font-weight: 600; color: #2c5282;">Arrow Down</div>
+                            <div>Scroll to Last Step</div>
+                        </div>
+
+                        <h3 style="color: #2c5282; font-size: 16px; margin-bottom: 12px; border-bottom: 2px solid #e9ecef; padding-bottom: 8px;">Export & Help</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 10px;">
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+E</div>
+                            <div>Go to Export Menu</div>
+                            
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+A</div>
+                            <div>Export for Analysis</div>
+                            
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+D</div>
+                            <div>Show/Hide Main Window</div>
+                            
+                            <div style="font-weight: 600; color: #2c5282;">Ctrl+Shift+H</div>
+                            <div>Show This Help</div>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; font-size: 12px; color: #1e40af; margin-top: 15px;">
+                            <strong>Desktop App:</strong> All shortcuts work from ANY application - even when DocuCapture is minimized!
+                        </div>
+                    </div>
+                    <button onclick="this.closest('div').parentElement.remove()" 
+                            style="width: 100%; padding: 12px; background: #2c5282; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                        Close
+                    </button>
+                </div>
+            `;
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+            
+            document.body.appendChild(modal);
+        }
+
+        // Initialize
+        updateStatus('Ready to start. Click "Start Recording" to begin capturing your process.');
+        
+        // Add keyboard shortcuts hint to status bar
+        setTimeout(() => {
+            if (window.electronAPI) {
+                updateStatus('Ready to start. Global shortcuts active - Ctrl+Shift+S works from ANY app!');
+            } else {
+                updateStatus('Ready to start. Press Ctrl+Shift+H to view keyboard shortcuts.');
+            }
+        }, 3000);
+
+        // Electron: Listen for global shortcut events
+        if (window.electronAPI) {
+            // Capture step from global shortcut
+            window.electronAPI.onCaptureStep(() => {
+                if (isRecording) {
+                    captureScreenshot();
+                    showKeyboardHint('Step captured! (Ctrl+Shift+S)');
+                }
+            });
+
+            // Toggle recording from global shortcut
+            window.electronAPI.onToggleRecording(() => {
+                if (isRecording) {
+                    stopCapture();
+                } else {
+                    startCapture();
+                }
+            });
+
+            // Show shortcuts from global shortcut
+            window.electronAPI.onShowShortcuts(() => {
+                showKeyboardShortcuts();
+            });
+
+            // Toggle timeline from global shortcut
+            window.electronAPI.onToggleTimeline(() => {
+                switchView(currentView === 'list' ? 'timeline' : 'list');
+            });
+
+            // Smart group from global shortcut
+            window.electronAPI.onSmartGroup(() => {
+                smartGroupSteps();
+            });
+
+            console.log('DocuCapture Desktop - Global shortcuts active!');
+        }
+    </script>
+</body>
+</html>
