@@ -9,7 +9,9 @@
     "build": "npm run build:renderer && npm run build:main",
     "start": "npm run build && electron .",
     "dev": "webpack --mode development && NODE_ENV=development electron .",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests specified\" && exit 0",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,28 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "build": {
+    "appId": "com.docucapture.app",
+    "productName": "DocuCapture",
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": ["dmg", "zip"]
+    },
+    "win": {
+      "target": ["nsis", "portable"]
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility"
+    }
+  },
   "bugs": {
     "url": "https://github.com/pandkd/docucapture/issues"
   },
